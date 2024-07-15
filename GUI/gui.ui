@@ -2872,7 +2872,7 @@ border-bottom-color: rgb(0, 0, 0);</string>
                     <string notr="true">border-color: rgb(255, 255, 255);</string>
                    </property>
                    <property name="text">
-                    <string>界面热导率</string>
+                    <string>界面热导</string>
                    </property>
                   </widget>
                   <widget class="QLineEdit" name="exp2_reslineEdit_2">
@@ -2921,7 +2921,7 @@ border-bottom-color: rgb(0, 0, 0);</string>
                     </font>
                    </property>
                    <property name="text">
-                    <string>W*K-1*m-1</string>
+                    <string>MW*K-1*m-2</string>
                    </property>
                   </widget>
                  </widget>

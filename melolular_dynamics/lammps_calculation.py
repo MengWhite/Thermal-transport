@@ -118,10 +118,10 @@ class Work(QThread):
                 print(Temperture)
                 x_1 = self.x*9/10
                 x_2 = (self.lattice_x_max_1-self.x)/10+self.x
-                dT_dx = abs((Temperture[9]-Temperture[8])/((x_2-x_1)/2))
+                dT = abs(Temperture[9]-Temperture[8])
                 
 
-                self.T_conduct = self.heat*1.602e3/((self.z_max-self.z_min)*(self.y_max-self.y_min)*dT_dx)
+                self.T_conduct = self.heat*1.602e3/((self.z_max-self.z_min)*(self.y_max-self.y_min)*dT)
 
         self.signal.emit('计算完毕')
 
