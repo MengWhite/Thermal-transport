@@ -16,9 +16,9 @@ from PySide6.QtGui import (QAction, QBrush, QColor, QConicalGradient,
     QIcon, QImage, QKeySequence, QLinearGradient,
     QPainter, QPalette, QPixmap, QRadialGradient,
     QTransform)
-from PySide6.QtWidgets import (QApplication, QLabel, QMainWindow, QMenu,
-    QMenuBar, QPushButton, QSizePolicy, QStatusBar,
-    QTextEdit, QVBoxLayout, QWidget)
+from PySide6.QtWidgets import (QApplication, QLabel, QLineEdit, QMainWindow,
+    QMenu, QMenuBar, QPushButton, QSizePolicy,
+    QStatusBar, QVBoxLayout, QWidget)
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -71,12 +71,9 @@ class Ui_MainWindow(object):
         font1.setFamilies([u"\u5b8b\u4f53"])
         font1.setPointSize(12)
         self.label.setFont(font1)
-        self.exp_res_lineEdit_2 = QTextEdit(self.centralwidget)
-        self.exp_res_lineEdit_2.setObjectName(u"exp_res_lineEdit_2")
-        self.exp_res_lineEdit_2.setGeometry(QRect(1160, 820, 221, 51))
         self.label_2 = QLabel(self.centralwidget)
         self.label_2.setObjectName(u"label_2")
-        self.label_2.setGeometry(QRect(1390, 830, 111, 31))
+        self.label_2.setGeometry(QRect(1240, 830, 111, 31))
         self.label_2.setFont(font1)
         self.pushButton_2 = QPushButton(self.centralwidget)
         self.pushButton_2.setObjectName(u"pushButton_2")
@@ -90,6 +87,9 @@ class Ui_MainWindow(object):
         self.verticalLayout_5 = QVBoxLayout(self.verticalLayoutWidget_5)
         self.verticalLayout_5.setObjectName(u"verticalLayout_5")
         self.verticalLayout_5.setContentsMargins(0, 0, 0, 0)
+        self.exp_res_lineEdit_2 = QLineEdit(self.centralwidget)
+        self.exp_res_lineEdit_2.setObjectName(u"exp_res_lineEdit_2")
+        self.exp_res_lineEdit_2.setGeometry(QRect(1160, 830, 71, 31))
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QMenuBar(MainWindow)
         self.menubar.setObjectName(u"menubar")

@@ -1,45 +1,39 @@
-LAMMPS (8 Feb 2023)
+LAMMPS (17 Apr 2024)
 OMP_NUM_THREADS environment is not set. Defaulting to 1 thread. (src/comm.cpp:98)
   using 1 OpenMP thread(s) per MPI task
-Loaded 1 plugins from D:\program\lammps\LAMMPS 64-bit 8Feb2023-MPI with Python\plugins
+Loaded 1 plugins from G:\lammps\LAMMPS 64-bit 17Apr2024-MSMPI\plugins
 variable init_tempareture equal 300.0
 variable setted_tempareture equal 300.0
 variable lattice_ensemble string nvt
 variable lattice_steps equal 1000.0
-variable heat_flux equal 8.0
+variable heat_flux equal 1.64
 variable heat_ensemble string nve
-variable sim_steps equal 4000.0
+variable sim_steps equal 2500.0
 variable vacancy equal 0
 variable type_1 string Cu
-variable type_2 string Ni
-variable potential_name string data/CuNi.eam.alloy
-variable lattice_x_max_1 equal 213.89999999999998
-variable diff_x equal 107.39749999999998
+variable potential_name string data/Cu.eam.alloy
+variable lattice_x_max_1 equal 72.2
 # 模型参数
 
 
 
-# variable potential_name     string data/CuNi.eam.alloy# 势函数文件名
+# variable potential_name     string data/Cu.eam.alloy  # 势函数文件名
 
-# variable type_1             string Cu                 # 所选元素1
-
-# variable type_2             string Ni                 # 所选元素2
+# variable type_1             string Cu                 # 所选元素
 
 # variable init_tempareture   equal   300               # 体系初始初始温度
 
 # variable setted_tempareture equal    300              # nvt弛豫下的设定温度
 
-# variable heat_flux          equal    1.2               # 体系引入热流大小
+# variable heat_flux          equal    10               # 体系引入热流大小
 
 # variable lattice_steps      equal    1000             # 弛豫步数
 
 # variable lattice_ensemble   string     nvt            # 弛豫所选系综名称
 
-# variable lattice_x_max_1 equal 212.14                     # 体系x最大值
+# variable lattice_x_max_1 equal 36.1                   # 体系x最大值
 
-# variable sim_steps          equal     10000            # 热导率nve模拟下的弛豫时间
-
-# variable diff_x             equal 107                  # 两种元素的分界位置
+# variable sim_steps          equal     1000            # 热导率nve模拟下的弛豫时间
 
 
 
@@ -51,9 +45,9 @@ atom_style atomic
 
 timestep 0.01
 
-neighbor 3 bin
+neighbor 2 bin
 
-neigh_modify delay 0 every 5 check yes
+neigh_modify check no
 
 
 
@@ -62,26 +56,28 @@ neigh_modify delay 0 every 5 check yes
 read_data data/lattice.lmp
 
 Reading data file ...
-  orthogonal box = (0 0 0) to (213.9 36.1 36.1)
+  orthogonal box = (0 0 0) to (72.2 14.44 14.44)
   1 by 1 by 1 MPI processor grid
   reading atoms ...
-  24000 atoms
-  read_data CPU = 0.117 seconds
+  1280 atoms
+  read_data CPU = 0.010 seconds
 
 
 # 力场设置
 
+# pair_style eam/alloy
+
+# pair_coeff * * ${potential_name} ${type_1}
+
 pair_style eam/alloy
 
-pair_coeff * * ${potential_name} ${type_1} ${type_2}
+pair_coeff * * ${potential_name} ${type_1}
 
-pair_coeff * * data/CuNi.eam.alloy ${type_1} ${type_2}
+pair_coeff * * data/Cu.eam.alloy ${type_1}
 
-pair_coeff * * data/CuNi.eam.alloy Cu ${type_2}
+pair_coeff * * data/Cu.eam.alloy Cu
 
-pair_coeff * * data/CuNi.eam.alloy Cu Ni
-
-Reading eam/alloy potential file data/CuNi.eam.alloy with DATE: 2024-07-15
+Reading eam/alloy potential file data/Cu.eam.alloy with DATE: 2024-09-11
 
 
 # 能量最小化
@@ -98,57 +94,56 @@ minimize 0 0 100 ${lattice_min_steps}
 
 minimize 0 0 100 100
 
-Switching to 'neigh_modify every 1 delay 0 check yes' setting during minimization
 Neighbor list info ...
-  update: every = 1 steps, delay = 0 steps, check = yes
+  update: every = 1 steps, delay = 0 steps, check = no
   max neighbors/atom: 2000, page size: 100000
-  master list distance cutoff = 8.715752
-  ghost atom cutoff = 8.715752
-  binsize = 4.357876, bins = 49 9 9
+  master list distance cutoff = 7.715752
+  ghost atom cutoff = 7.715752
+  binsize = 3.857876, bins = 19 4 4
   1 neighbor lists, perpetual/occasional/extra = 1 0 0
   (1) pair eam/alloy, perpetual
       attributes: half, newton on
       pair build: half/bin/atomonly/newton
       stencil: half/bin/3d
       bin: standard
-Per MPI rank memory allocation (min/avg/max) = 27.5 | 27.5 | 27.5 Mbytes
+Per MPI rank memory allocation (min/avg/max) = 4.581 | 4.581 | 4.581 Mbytes
    Step          Temp          E_pair         E_mol          TotEng         Press          Volume    
-         0   0             -94595.611      0             -94595.611     -5608.8833      276518.72    
-        57   0             -95479.234      0             -95479.234     -26062.622      274848.36    
-Loop time of 4.18951 on 1 procs for 57 steps with 24000 atoms
+         0   0             -4490.4192      0             -4490.4192      646.17982      14681.326    
+        50   0             -4490.5148      0             -4490.5148     -2706.2524      14718.307    
+Loop time of 0.422916 on 1 procs for 50 steps with 1280 atoms
 
-66.0% CPU use with 1 MPI tasks x 1 OpenMP threads
+40.6% CPU use with 1 MPI tasks x 1 OpenMP threads
 
 Minimization stats:
   Stopping criterion = max force evaluations
   Energy initial, next-to-last, final = 
-     -94595.6112784375  -95478.8554495102  -95479.2344659229
-  Force two-norm initial, final = 62.135125 2.0420248
-  Force max component initial, final = 3.182609 0.04348002
-  Final line search alpha, max atom move = 0.92987164 0.040430837
-  Iterations, force evaluations = 57 100
+     -4490.41924257896  -4490.51480693129  -4490.51480693321
+  Force two-norm initial, final = 0.5709356 0.00011600289
+  Force max component initial, final = 0.058122708 7.423226e-06
+  Final line search alpha, max atom move = 1 7.423226e-06
+  Iterations, force evaluations = 50 100
 
 MPI task timing breakdown:
 Section |  min time  |  avg time  |  max time  |%varavg| %total
 ---------------------------------------------------------------
-Pair    | 4.089      | 4.089      | 4.089      |   0.0 | 97.60
-Neigh   | 0.042277   | 0.042277   | 0.042277   |   0.0 |  1.01
-Comm    | 0.011898   | 0.011898   | 0.011898   |   0.0 |  0.28
+Pair    | 0.20088    | 0.20088    | 0.20088    |   0.0 | 47.50
+Neigh   | 0.20774    | 0.20774    | 0.20774    |   0.0 | 49.12
+Comm    | 0.003921   | 0.003921   | 0.003921   |   0.0 |  0.93
 Output  | 0          | 0          | 0          |   0.0 |  0.00
 Modify  | 0          | 0          | 0          |   0.0 |  0.00
-Other   |            | 0.04637    |            |       |  1.11
+Other   |            | 0.01038    |            |       |  2.45
 
-Nlocal:          24000 ave       24000 max       24000 min
+Nlocal:           1280 ave        1280 max        1280 min
 Histogram: 1 0 0 0 0 0 0 0 0 0
-Nghost:          27726 ave       27726 max       27726 min
+Nghost:           4500 ave        4500 max        4500 min
 Histogram: 1 0 0 0 0 0 0 0 0 0
-Neighs:    2.70106e+06 ave 2.70106e+06 max 2.70106e+06 min
+Neighs:         108096 ave      108096 max      108096 min
 Histogram: 1 0 0 0 0 0 0 0 0 0
 
-Total # of neighbors = 2701060
-Ave neighs/atom = 112.54417
-Neighbor list builds = 1
-Dangerous builds = 0
+Total # of neighbors = 108096
+Ave neighs/atom = 84.45
+Neighbor list builds = 101
+Dangerous builds not checked
 reset_timestep 0
 
 
@@ -202,45 +197,45 @@ run ${lattice_steps_temp}
 
 run 100
 
-Per MPI rank memory allocation (min/avg/max) = 23.03 | 23.03 | 23.03 Mbytes
+Per MPI rank memory allocation (min/avg/max) = 3.459 | 3.459 | 3.459 Mbytes
    Step          Temp     
          0   300          
-        10   150.6208     
-        20   172.0549     
-        30   188.97031    
-        40   206.77373    
-        50   223.16898    
-        60   247.68027    
-        70   267.27848    
-        80   283.8725     
-        90   297.16325    
-       100   309.35554    
-Loop time of 3.72809 on 1 procs for 100 steps with 24000 atoms
+        10   141.28481    
+        20   195.0016     
+        30   212.84918    
+        40   221.71496    
+        50   278.24716    
+        60   297.29953    
+        70   311.80823    
+        80   312.40815    
+        90   299.98634    
+       100   285.28151    
+Loop time of 0.405241 on 1 procs for 100 steps with 1280 atoms
 
-Performance: 23.175 ns/day, 1.036 hours/ns, 26.823 timesteps/s, 643.762 katom-step/s
-47.8% CPU use with 1 MPI tasks x 1 OpenMP threads
+Performance: 213.206 ns/day, 0.113 hours/ns, 246.767 timesteps/s, 315.861 katom-step/s
+19.3% CPU use with 1 MPI tasks x 1 OpenMP threads
 
 MPI task timing breakdown:
 Section |  min time  |  avg time  |  max time  |%varavg| %total
 ---------------------------------------------------------------
-Pair    | 3.6715     | 3.6715     | 3.6715     |   0.0 | 98.48
-Neigh   | 0          | 0          | 0          |   0.0 |  0.00
-Comm    | 0.014506   | 0.014506   | 0.014506   |   0.0 |  0.39
-Output  | 0.003214   | 0.003214   | 0.003214   |   0.0 |  0.09
-Modify  | 0.034329   | 0.034329   | 0.034329   |   0.0 |  0.92
-Other   |            | 0.004557   |            |       |  0.12
+Pair    | 0.17484    | 0.17484    | 0.17484    |   0.0 | 43.14
+Neigh   | 0.21332    | 0.21332    | 0.21332    |   0.0 | 52.64
+Comm    | 0.004417   | 0.004417   | 0.004417   |   0.0 |  1.09
+Output  | 0.001378   | 0.001378   | 0.001378   |   0.0 |  0.34
+Modify  | 0.002021   | 0.002021   | 0.002021   |   0.0 |  0.50
+Other   |            | 0.009272   |            |       |  2.29
 
-Nlocal:          24000 ave       24000 max       24000 min
+Nlocal:           1280 ave        1280 max        1280 min
 Histogram: 1 0 0 0 0 0 0 0 0 0
-Nghost:          27707 ave       27707 max       27707 min
+Nghost:           4500 ave        4500 max        4500 min
 Histogram: 1 0 0 0 0 0 0 0 0 0
-Neighs:     2.6975e+06 ave  2.6975e+06 max  2.6975e+06 min
+Neighs:          96281 ave       96281 max       96281 min
 Histogram: 1 0 0 0 0 0 0 0 0 0
 
-Total # of neighbors = 2697500
-Ave neighs/atom = 112.39583
-Neighbor list builds = 0
-Dangerous builds = 0
+Total # of neighbors = 96281
+Ave neighs/atom = 75.219531
+Neighbor list builds = 100
+Dangerous builds not checked
 write_data data/lattice_final.lmp
 
 System init for write_data ...
@@ -248,45 +243,45 @@ run ${lattice_steps_temp}
 
 run 100
 
-Per MPI rank memory allocation (min/avg/max) = 23.03 | 23.03 | 23.03 Mbytes
+Per MPI rank memory allocation (min/avg/max) = 3.459 | 3.459 | 3.459 Mbytes
    Step          Temp     
-       100   309.35554    
-       110   307.87373    
-       120   300.6994     
-       130   292.71334    
-       140   292.65382    
-       150   295.78381    
-       160   304.36258    
-       170   307.60222    
-       180   303.81735    
-       190   298.52878    
-       200   296.87195    
-Loop time of 3.65444 on 1 procs for 100 steps with 24000 atoms
+       100   285.28151    
+       110   286.27762    
+       120   299.15269    
+       130   296.0931     
+       140   315.15852    
+       150   312.18149    
+       160   296.02948    
+       170   297.95317    
+       180   303.23051    
+       190   296.81613    
+       200   313.70008    
+Loop time of 0.380799 on 1 procs for 100 steps with 1280 atoms
 
-Performance: 23.642 ns/day, 1.015 hours/ns, 27.364 timesteps/s, 656.735 katom-step/s
-50.9% CPU use with 1 MPI tasks x 1 OpenMP threads
+Performance: 226.891 ns/day, 0.106 hours/ns, 262.606 timesteps/s, 336.135 katom-step/s
+20.5% CPU use with 1 MPI tasks x 1 OpenMP threads
 
 MPI task timing breakdown:
 Section |  min time  |  avg time  |  max time  |%varavg| %total
 ---------------------------------------------------------------
-Pair    | 3.5994     | 3.5994     | 3.5994     |   0.0 | 98.49
-Neigh   | 0          | 0          | 0          |   0.0 |  0.00
-Comm    | 0.013648   | 0.013648   | 0.013648   |   0.0 |  0.37
-Output  | 0.003598   | 0.003598   | 0.003598   |   0.0 |  0.10
-Modify  | 0.033425   | 0.033425   | 0.033425   |   0.0 |  0.91
-Other   |            | 0.004383   |            |       |  0.12
+Pair    | 0.16488    | 0.16488    | 0.16488    |   0.0 | 43.30
+Neigh   | 0.19989    | 0.19989    | 0.19989    |   0.0 | 52.49
+Comm    | 0.004265   | 0.004265   | 0.004265   |   0.0 |  1.12
+Output  | 0.001323   | 0.001323   | 0.001323   |   0.0 |  0.35
+Modify  | 0.001974   | 0.001974   | 0.001974   |   0.0 |  0.52
+Other   |            | 0.008466   |            |       |  2.22
 
-Nlocal:          24000 ave       24000 max       24000 min
+Nlocal:           1280 ave        1280 max        1280 min
 Histogram: 1 0 0 0 0 0 0 0 0 0
-Nghost:          27642 ave       27642 max       27642 min
+Nghost:           4500 ave        4500 max        4500 min
 Histogram: 1 0 0 0 0 0 0 0 0 0
-Neighs:    2.73619e+06 ave 2.73619e+06 max 2.73619e+06 min
+Neighs:          94433 ave       94433 max       94433 min
 Histogram: 1 0 0 0 0 0 0 0 0 0
 
-Total # of neighbors = 2736191
-Ave neighs/atom = 114.00796
-Neighbor list builds = 0
-Dangerous builds = 0
+Total # of neighbors = 94433
+Ave neighs/atom = 73.775781
+Neighbor list builds = 100
+Dangerous builds not checked
 write_data data/lattice_final.lmp
 
 System init for write_data ...
@@ -294,45 +289,45 @@ run ${lattice_steps_temp}
 
 run 100
 
-Per MPI rank memory allocation (min/avg/max) = 23.03 | 23.03 | 23.03 Mbytes
+Per MPI rank memory allocation (min/avg/max) = 3.459 | 3.459 | 3.459 Mbytes
    Step          Temp     
-       200   296.87195    
-       210   295.67303    
-       220   302.03794    
-       230   301.99307    
-       240   303.69399    
-       250   299.62982    
-       260   296.97319    
-       270   297.9343     
-       280   299.4262     
-       290   303.35897    
-       300   303.74472    
-Loop time of 3.41592 on 1 procs for 100 steps with 24000 atoms
+       200   313.70008    
+       210   306.13569    
+       220   300.92529    
+       230   295.26005    
+       240   296.66056    
+       250   302.57652    
+       260   309.86877    
+       270   302.81176    
+       280   296.24019    
+       290   299.08712    
+       300   290.06971    
+Loop time of 0.393433 on 1 procs for 100 steps with 1280 atoms
 
-Performance: 25.293 ns/day, 0.949 hours/ns, 29.275 timesteps/s, 702.592 katom-step/s
-65.0% CPU use with 1 MPI tasks x 1 OpenMP threads
+Performance: 219.605 ns/day, 0.109 hours/ns, 254.173 timesteps/s, 325.341 katom-step/s
+27.8% CPU use with 1 MPI tasks x 1 OpenMP threads
 
 MPI task timing breakdown:
 Section |  min time  |  avg time  |  max time  |%varavg| %total
 ---------------------------------------------------------------
-Pair    | 3.3637     | 3.3637     | 3.3637     |   0.0 | 98.47
-Neigh   | 0          | 0          | 0          |   0.0 |  0.00
-Comm    | 0.012421   | 0.012421   | 0.012421   |   0.0 |  0.36
-Output  | 0.004349   | 0.004349   | 0.004349   |   0.0 |  0.13
-Modify  | 0.03116    | 0.03116    | 0.03116    |   0.0 |  0.91
-Other   |            | 0.004309   |            |       |  0.13
+Pair    | 0.16991    | 0.16991    | 0.16991    |   0.0 | 43.19
+Neigh   | 0.20536    | 0.20536    | 0.20536    |   0.0 | 52.20
+Comm    | 0.0045     | 0.0045     | 0.0045     |   0.0 |  1.14
+Output  | 0.001387   | 0.001387   | 0.001387   |   0.0 |  0.35
+Modify  | 0.002089   | 0.002089   | 0.002089   |   0.0 |  0.53
+Other   |            | 0.01018    |            |       |  2.59
 
-Nlocal:          24000 ave       24000 max       24000 min
+Nlocal:           1280 ave        1280 max        1280 min
 Histogram: 1 0 0 0 0 0 0 0 0 0
-Nghost:          27420 ave       27420 max       27420 min
+Nghost:           4500 ave        4500 max        4500 min
 Histogram: 1 0 0 0 0 0 0 0 0 0
-Neighs:    2.73795e+06 ave 2.73795e+06 max 2.73795e+06 min
+Neighs:          96867 ave       96867 max       96867 min
 Histogram: 1 0 0 0 0 0 0 0 0 0
 
-Total # of neighbors = 2737954
-Ave neighs/atom = 114.08142
-Neighbor list builds = 0
-Dangerous builds = 0
+Total # of neighbors = 96867
+Ave neighs/atom = 75.677344
+Neighbor list builds = 100
+Dangerous builds not checked
 write_data data/lattice_final.lmp
 
 System init for write_data ...
@@ -340,45 +335,45 @@ run ${lattice_steps_temp}
 
 run 100
 
-Per MPI rank memory allocation (min/avg/max) = 23.03 | 23.03 | 23.03 Mbytes
+Per MPI rank memory allocation (min/avg/max) = 3.459 | 3.459 | 3.459 Mbytes
    Step          Temp     
-       300   303.74472    
-       310   301.25802    
-       320   298.20802    
-       330   295.96067    
-       340   301.03016    
-       350   303.46269    
-       360   302.85555    
-       370   300.23226    
-       380   298.42245    
-       390   295.52154    
-       400   299.17843    
-Loop time of 3.53769 on 1 procs for 100 steps with 24000 atoms
+       300   290.06971    
+       310   300.28936    
+       320   289.25829    
+       330   312.49596    
+       340   306.66968    
+       350   292.73407    
+       360   300.90437    
+       370   299.4045     
+       380   291.19741    
+       390   300.08178    
+       400   303.78915    
+Loop time of 0.401168 on 1 procs for 100 steps with 1280 atoms
 
-Performance: 24.423 ns/day, 0.983 hours/ns, 28.267 timesteps/s, 678.409 katom-step/s
-52.1% CPU use with 1 MPI tasks x 1 OpenMP threads
+Performance: 215.371 ns/day, 0.111 hours/ns, 249.272 timesteps/s, 319.068 katom-step/s
+23.4% CPU use with 1 MPI tasks x 1 OpenMP threads
 
 MPI task timing breakdown:
 Section |  min time  |  avg time  |  max time  |%varavg| %total
 ---------------------------------------------------------------
-Pair    | 3.4852     | 3.4852     | 3.4852     |   0.0 | 98.52
-Neigh   | 0          | 0          | 0          |   0.0 |  0.00
-Comm    | 0.012809   | 0.012809   | 0.012809   |   0.0 |  0.36
-Output  | 0.003452   | 0.003452   | 0.003452   |   0.0 |  0.10
-Modify  | 0.031878   | 0.031878   | 0.031878   |   0.0 |  0.90
-Other   |            | 0.004356   |            |       |  0.12
+Pair    | 0.17275    | 0.17275    | 0.17275    |   0.0 | 43.06
+Neigh   | 0.21156    | 0.21156    | 0.21156    |   0.0 | 52.74
+Comm    | 0.004588   | 0.004588   | 0.004588   |   0.0 |  1.14
+Output  | 0.001445   | 0.001445   | 0.001445   |   0.0 |  0.36
+Modify  | 0.002016   | 0.002016   | 0.002016   |   0.0 |  0.50
+Other   |            | 0.008811   |            |       |  2.20
 
-Nlocal:          24000 ave       24000 max       24000 min
+Nlocal:           1280 ave        1280 max        1280 min
 Histogram: 1 0 0 0 0 0 0 0 0 0
-Nghost:          26998 ave       26998 max       26998 min
+Nghost:           4500 ave        4500 max        4500 min
 Histogram: 1 0 0 0 0 0 0 0 0 0
-Neighs:     2.7397e+06 ave  2.7397e+06 max  2.7397e+06 min
+Neighs:         100540 ave      100540 max      100540 min
 Histogram: 1 0 0 0 0 0 0 0 0 0
 
-Total # of neighbors = 2739701
-Ave neighs/atom = 114.15421
-Neighbor list builds = 0
-Dangerous builds = 0
+Total # of neighbors = 100540
+Ave neighs/atom = 78.546875
+Neighbor list builds = 100
+Dangerous builds not checked
 write_data data/lattice_final.lmp
 
 System init for write_data ...
@@ -386,45 +381,45 @@ run ${lattice_steps_temp}
 
 run 100
 
-Per MPI rank memory allocation (min/avg/max) = 23.04 | 23.04 | 23.04 Mbytes
+Per MPI rank memory allocation (min/avg/max) = 3.459 | 3.459 | 3.459 Mbytes
    Step          Temp     
-       400   299.17843    
-       410   302.63966    
-       420   303.16486    
-       430   300.76293    
-       440   299.35439    
-       450   296.73065    
-       460   298.69134    
-       470   299.40923    
-       480   300.45615    
-       490   302.19668    
-       500   300.31765    
-Loop time of 3.71429 on 1 procs for 100 steps with 24000 atoms
+       400   303.78915    
+       410   302.84352    
+       420   291.77479    
+       430   296.1702     
+       440   296.41855    
+       450   301.09254    
+       460   310.70195    
+       470   302.59398    
+       480   302.15139    
+       490   292.71324    
+       500   297.17201    
+Loop time of 0.399155 on 1 procs for 100 steps with 1280 atoms
 
-Performance: 23.261 ns/day, 1.032 hours/ns, 26.923 timesteps/s, 646.152 katom-step/s
-37.0% CPU use with 1 MPI tasks x 1 OpenMP threads
+Performance: 216.457 ns/day, 0.111 hours/ns, 250.529 timesteps/s, 320.677 katom-step/s
+11.7% CPU use with 1 MPI tasks x 1 OpenMP threads
 
 MPI task timing breakdown:
 Section |  min time  |  avg time  |  max time  |%varavg| %total
 ---------------------------------------------------------------
-Pair    | 3.6569     | 3.6569     | 3.6569     |   0.0 | 98.46
-Neigh   | 0          | 0          | 0          |   0.0 |  0.00
-Comm    | 0.014929   | 0.014929   | 0.014929   |   0.0 |  0.40
-Output  | 0.003983   | 0.003983   | 0.003983   |   0.0 |  0.11
-Modify  | 0.034022   | 0.034022   | 0.034022   |   0.0 |  0.92
-Other   |            | 0.004417   |            |       |  0.12
+Pair    | 0.17184    | 0.17184    | 0.17184    |   0.0 | 43.05
+Neigh   | 0.21084    | 0.21084    | 0.21084    |   0.0 | 52.82
+Comm    | 0.004446   | 0.004446   | 0.004446   |   0.0 |  1.11
+Output  | 0.001403   | 0.001403   | 0.001403   |   0.0 |  0.35
+Modify  | 0.001965   | 0.001965   | 0.001965   |   0.0 |  0.49
+Other   |            | 0.008668   |            |       |  2.17
 
-Nlocal:          24000 ave       24000 max       24000 min
+Nlocal:           1280 ave        1280 max        1280 min
 Histogram: 1 0 0 0 0 0 0 0 0 0
-Nghost:          27015 ave       27015 max       27015 min
+Nghost:           4500 ave        4500 max        4500 min
 Histogram: 1 0 0 0 0 0 0 0 0 0
-Neighs:    2.71704e+06 ave 2.71704e+06 max 2.71704e+06 min
+Neighs:          96433 ave       96433 max       96433 min
 Histogram: 1 0 0 0 0 0 0 0 0 0
 
-Total # of neighbors = 2717045
-Ave neighs/atom = 113.21021
-Neighbor list builds = 0
-Dangerous builds = 0
+Total # of neighbors = 96433
+Ave neighs/atom = 75.338281
+Neighbor list builds = 100
+Dangerous builds not checked
 write_data data/lattice_final.lmp
 
 System init for write_data ...
@@ -432,45 +427,45 @@ run ${lattice_steps_temp}
 
 run 100
 
-Per MPI rank memory allocation (min/avg/max) = 23.04 | 23.04 | 23.04 Mbytes
+Per MPI rank memory allocation (min/avg/max) = 3.459 | 3.459 | 3.459 Mbytes
    Step          Temp     
-       500   300.31765    
-       510   298.09073    
-       520   297.45733    
-       530   300.70413    
-       540   301.23333    
-       550   300.45006    
-       560   301.86648    
-       570   300.32751    
-       580   299.85817    
-       590   296.90514    
-       600   297.24691    
-Loop time of 3.36134 on 1 procs for 100 steps with 24000 atoms
+       500   297.17201    
+       510   297.48602    
+       520   296.19197    
+       530   303.1922     
+       540   290.99539    
+       550   297.81688    
+       560   299.00137    
+       570   303.48546    
+       580   302.65704    
+       590   315.26399    
+       600   317.91157    
+Loop time of 0.380999 on 1 procs for 100 steps with 1280 atoms
 
-Performance: 25.704 ns/day, 0.934 hours/ns, 29.750 timesteps/s, 714.002 katom-step/s
-69.7% CPU use with 1 MPI tasks x 1 OpenMP threads
+Performance: 226.772 ns/day, 0.106 hours/ns, 262.468 timesteps/s, 335.959 katom-step/s
+16.4% CPU use with 1 MPI tasks x 1 OpenMP threads
 
 MPI task timing breakdown:
 Section |  min time  |  avg time  |  max time  |%varavg| %total
 ---------------------------------------------------------------
-Pair    | 3.3081     | 3.3081     | 3.3081     |   0.0 | 98.42
-Neigh   | 0          | 0          | 0          |   0.0 |  0.00
-Comm    | 0.012966   | 0.012966   | 0.012966   |   0.0 |  0.39
-Output  | 0.004513   | 0.004513   | 0.004513   |   0.0 |  0.13
-Modify  | 0.031532   | 0.031532   | 0.031532   |   0.0 |  0.94
-Other   |            | 0.004198   |            |       |  0.12
+Pair    | 0.1646     | 0.1646     | 0.1646     |   0.0 | 43.20
+Neigh   | 0.20011    | 0.20011    | 0.20011    |   0.0 | 52.52
+Comm    | 0.004443   | 0.004443   | 0.004443   |   0.0 |  1.17
+Output  | 0.001414   | 0.001414   | 0.001414   |   0.0 |  0.37
+Modify  | 0.001957   | 0.001957   | 0.001957   |   0.0 |  0.51
+Other   |            | 0.008475   |            |       |  2.22
 
-Nlocal:          24000 ave       24000 max       24000 min
+Nlocal:           1280 ave        1280 max        1280 min
 Histogram: 1 0 0 0 0 0 0 0 0 0
-Nghost:          27150 ave       27150 max       27150 min
+Nghost:           4500 ave        4500 max        4500 min
 Histogram: 1 0 0 0 0 0 0 0 0 0
-Neighs:      2.699e+06 ave   2.699e+06 max   2.699e+06 min
+Neighs:          94616 ave       94616 max       94616 min
 Histogram: 1 0 0 0 0 0 0 0 0 0
 
-Total # of neighbors = 2699000
-Ave neighs/atom = 112.45833
-Neighbor list builds = 0
-Dangerous builds = 0
+Total # of neighbors = 94616
+Ave neighs/atom = 73.91875
+Neighbor list builds = 100
+Dangerous builds not checked
 write_data data/lattice_final.lmp
 
 System init for write_data ...
@@ -478,45 +473,45 @@ run ${lattice_steps_temp}
 
 run 100
 
-Per MPI rank memory allocation (min/avg/max) = 23.04 | 23.04 | 23.04 Mbytes
+Per MPI rank memory allocation (min/avg/max) = 3.459 | 3.459 | 3.459 Mbytes
    Step          Temp     
-       600   297.24691    
-       610   299.16225    
-       620   301.53046    
-       630   301.31401    
-       640   297.84353    
-       650   297.65056    
-       660   299.4096     
-       670   298.77447    
-       680   303.10536    
-       690   300.86108    
-       700   298.91501    
-Loop time of 3.57529 on 1 procs for 100 steps with 24000 atoms
+       600   317.91157    
+       610   308.64587    
+       620   312.33468    
+       630   301.33247    
+       640   306.74178    
+       650   301.25936    
+       660   298.71657    
+       670   302.64586    
+       680   295.78986    
+       690   306.40428    
+       700   305.91934    
+Loop time of 0.388555 on 1 procs for 100 steps with 1280 atoms
 
-Performance: 24.166 ns/day, 0.993 hours/ns, 27.970 timesteps/s, 671.275 katom-step/s
-49.4% CPU use with 1 MPI tasks x 1 OpenMP threads
+Performance: 222.362 ns/day, 0.108 hours/ns, 257.364 timesteps/s, 329.426 katom-step/s
+8.0% CPU use with 1 MPI tasks x 1 OpenMP threads
 
 MPI task timing breakdown:
 Section |  min time  |  avg time  |  max time  |%varavg| %total
 ---------------------------------------------------------------
-Pair    | 3.5174     | 3.5174     | 3.5174     |   0.0 | 98.38
-Neigh   | 0          | 0          | 0          |   0.0 |  0.00
-Comm    | 0.014674   | 0.014674   | 0.014674   |   0.0 |  0.41
-Output  | 0.002767   | 0.002767   | 0.002767   |   0.0 |  0.08
-Modify  | 0.03594    | 0.03594    | 0.03594    |   0.0 |  1.01
-Other   |            | 0.004501   |            |       |  0.13
+Pair    | 0.16667    | 0.16667    | 0.16667    |   0.0 | 42.89
+Neigh   | 0.20509    | 0.20509    | 0.20509    |   0.0 | 52.78
+Comm    | 0.004667   | 0.004667   | 0.004667   |   0.0 |  1.20
+Output  | 0.00139    | 0.00139    | 0.00139    |   0.0 |  0.36
+Modify  | 0.001971   | 0.001971   | 0.001971   |   0.0 |  0.51
+Other   |            | 0.008773   |            |       |  2.26
 
-Nlocal:          24000 ave       24000 max       24000 min
+Nlocal:           1280 ave        1280 max        1280 min
 Histogram: 1 0 0 0 0 0 0 0 0 0
-Nghost:          27462 ave       27462 max       27462 min
+Nghost:           4500 ave        4500 max        4500 min
 Histogram: 1 0 0 0 0 0 0 0 0 0
-Neighs:    2.71346e+06 ave 2.71346e+06 max 2.71346e+06 min
+Neighs:          96973 ave       96973 max       96973 min
 Histogram: 1 0 0 0 0 0 0 0 0 0
 
-Total # of neighbors = 2713459
-Ave neighs/atom = 113.06079
-Neighbor list builds = 0
-Dangerous builds = 0
+Total # of neighbors = 96973
+Ave neighs/atom = 75.760156
+Neighbor list builds = 100
+Dangerous builds not checked
 write_data data/lattice_final.lmp
 
 System init for write_data ...
@@ -524,45 +519,45 @@ run ${lattice_steps_temp}
 
 run 100
 
-Per MPI rank memory allocation (min/avg/max) = 23.04 | 23.04 | 23.04 Mbytes
+Per MPI rank memory allocation (min/avg/max) = 3.459 | 3.459 | 3.459 Mbytes
    Step          Temp     
-       700   298.91501    
-       710   296.92079    
-       720   299.15102    
-       730   298.22182    
-       740   302.35824    
-       750   299.72111    
-       760   299.22366    
-       770   298.30854    
-       780   297.4528     
-       790   298.43297    
-       800   303.44084    
-Loop time of 3.50104 on 1 procs for 100 steps with 24000 atoms
+       700   305.91934    
+       710   304.51959    
+       720   294.01867    
+       730   293.2412     
+       740   289.71756    
+       750   290.11205    
+       760   296.77302    
+       770   301.53683    
+       780   314.36982    
+       790   303.92066    
+       800   294.24358    
+Loop time of 0.411925 on 1 procs for 100 steps with 1280 atoms
 
-Performance: 24.678 ns/day, 0.973 hours/ns, 28.563 timesteps/s, 685.510 katom-step/s
-62.5% CPU use with 1 MPI tasks x 1 OpenMP threads
+Performance: 209.747 ns/day, 0.114 hours/ns, 242.763 timesteps/s, 310.736 katom-step/s
+37.9% CPU use with 1 MPI tasks x 1 OpenMP threads
 
 MPI task timing breakdown:
 Section |  min time  |  avg time  |  max time  |%varavg| %total
 ---------------------------------------------------------------
-Pair    | 3.4466     | 3.4466     | 3.4466     |   0.0 | 98.44
-Neigh   | 0          | 0          | 0          |   0.0 |  0.00
-Comm    | 0.013399   | 0.013399   | 0.013399   |   0.0 |  0.38
-Output  | 0.004263   | 0.004263   | 0.004263   |   0.0 |  0.12
-Modify  | 0.032432   | 0.032432   | 0.032432   |   0.0 |  0.93
-Other   |            | 0.004381   |            |       |  0.13
+Pair    | 0.17674    | 0.17674    | 0.17674    |   0.0 | 42.91
+Neigh   | 0.21789    | 0.21789    | 0.21789    |   0.0 | 52.90
+Comm    | 0.004769   | 0.004769   | 0.004769   |   0.0 |  1.16
+Output  | 0.001501   | 0.001501   | 0.001501   |   0.0 |  0.36
+Modify  | 0.00208    | 0.00208    | 0.00208    |   0.0 |  0.50
+Other   |            | 0.008949   |            |       |  2.17
 
-Nlocal:          24000 ave       24000 max       24000 min
+Nlocal:           1280 ave        1280 max        1280 min
 Histogram: 1 0 0 0 0 0 0 0 0 0
-Nghost:          27547 ave       27547 max       27547 min
+Nghost:           4500 ave        4500 max        4500 min
 Histogram: 1 0 0 0 0 0 0 0 0 0
-Neighs:    2.73336e+06 ave 2.73336e+06 max 2.73336e+06 min
+Neighs:         100039 ave      100039 max      100039 min
 Histogram: 1 0 0 0 0 0 0 0 0 0
 
-Total # of neighbors = 2733359
-Ave neighs/atom = 113.88996
-Neighbor list builds = 0
-Dangerous builds = 0
+Total # of neighbors = 100039
+Ave neighs/atom = 78.155469
+Neighbor list builds = 100
+Dangerous builds not checked
 write_data data/lattice_final.lmp
 
 System init for write_data ...
@@ -570,45 +565,45 @@ run ${lattice_steps_temp}
 
 run 100
 
-Per MPI rank memory allocation (min/avg/max) = 23.04 | 23.04 | 23.04 Mbytes
+Per MPI rank memory allocation (min/avg/max) = 3.459 | 3.459 | 3.459 Mbytes
    Step          Temp     
-       800   303.44084    
-       810   304.41692    
-       820   299.65675    
-       830   298.06615    
-       840   298.98928    
-       850   299.86747    
-       860   301.16343    
-       870   299.22556    
-       880   299.75873    
-       890   299.74637    
-       900   300.41295    
-Loop time of 3.57948 on 1 procs for 100 steps with 24000 atoms
+       800   294.24358    
+       810   285.56815    
+       820   290.46033    
+       830   296.17159    
+       840   302.05463    
+       850   299.64394    
+       860   297.16011    
+       870   294.18491    
+       880   299.44667    
+       890   299.40086    
+       900   296.9293     
+Loop time of 0.398544 on 1 procs for 100 steps with 1280 atoms
 
-Performance: 24.138 ns/day, 0.994 hours/ns, 27.937 timesteps/s, 670.489 katom-step/s
-65.9% CPU use with 1 MPI tasks x 1 OpenMP threads
+Performance: 216.789 ns/day, 0.111 hours/ns, 250.913 timesteps/s, 321.169 katom-step/s
+19.6% CPU use with 1 MPI tasks x 1 OpenMP threads
 
 MPI task timing breakdown:
 Section |  min time  |  avg time  |  max time  |%varavg| %total
 ---------------------------------------------------------------
-Pair    | 3.5269     | 3.5269     | 3.5269     |   0.0 | 98.53
-Neigh   | 0          | 0          | 0          |   0.0 |  0.00
-Comm    | 0.012186   | 0.012186   | 0.012186   |   0.0 |  0.34
-Output  | 0.004651   | 0.004651   | 0.004651   |   0.0 |  0.13
-Modify  | 0.031299   | 0.031299   | 0.031299   |   0.0 |  0.87
-Other   |            | 0.004459   |            |       |  0.12
+Pair    | 0.17124    | 0.17124    | 0.17124    |   0.0 | 42.97
+Neigh   | 0.21061    | 0.21061    | 0.21061    |   0.0 | 52.84
+Comm    | 0.004467   | 0.004467   | 0.004467   |   0.0 |  1.12
+Output  | 0.001382   | 0.001382   | 0.001382   |   0.0 |  0.35
+Modify  | 0.001964   | 0.001964   | 0.001964   |   0.0 |  0.49
+Other   |            | 0.008884   |            |       |  2.23
 
-Nlocal:          24000 ave       24000 max       24000 min
+Nlocal:           1280 ave        1280 max        1280 min
 Histogram: 1 0 0 0 0 0 0 0 0 0
-Nghost:          27532 ave       27532 max       27532 min
+Nghost:           4500 ave        4500 max        4500 min
 Histogram: 1 0 0 0 0 0 0 0 0 0
-Neighs:    2.72616e+06 ave 2.72616e+06 max 2.72616e+06 min
+Neighs:          96017 ave       96017 max       96017 min
 Histogram: 1 0 0 0 0 0 0 0 0 0
 
-Total # of neighbors = 2726158
-Ave neighs/atom = 113.58992
-Neighbor list builds = 0
-Dangerous builds = 0
+Total # of neighbors = 96017
+Ave neighs/atom = 75.013281
+Neighbor list builds = 100
+Dangerous builds not checked
 write_data data/lattice_final.lmp
 
 System init for write_data ...
@@ -616,45 +611,45 @@ run ${lattice_steps_temp}
 
 run 100
 
-Per MPI rank memory allocation (min/avg/max) = 23.04 | 23.04 | 23.04 Mbytes
+Per MPI rank memory allocation (min/avg/max) = 3.459 | 3.459 | 3.459 Mbytes
    Step          Temp     
-       900   300.41295    
-       910   298.1502     
-       920   299.79574    
-       930   302.84634    
-       940   301.79724    
-       950   298.5364     
-       960   298.88234    
-       970   297.08019    
-       980   301.31223    
-       990   300.33061    
-      1000   299.30753    
-Loop time of 3.44115 on 1 procs for 100 steps with 24000 atoms
+       900   296.9293     
+       910   294.26912    
+       920   295.5843     
+       930   304.69669    
+       940   291.54148    
+       950   296.79604    
+       960   294.18153    
+       970   294.66446    
+       980   301.54484    
+       990   300.31335    
+      1000   298.20634    
+Loop time of 0.401452 on 1 procs for 100 steps with 1280 atoms
 
-Performance: 25.108 ns/day, 0.956 hours/ns, 29.060 timesteps/s, 697.441 katom-step/s
-81.7% CPU use with 1 MPI tasks x 1 OpenMP threads
+Performance: 215.219 ns/day, 0.112 hours/ns, 249.096 timesteps/s, 318.843 katom-step/s
+35.0% CPU use with 1 MPI tasks x 1 OpenMP threads
 
 MPI task timing breakdown:
 Section |  min time  |  avg time  |  max time  |%varavg| %total
 ---------------------------------------------------------------
-Pair    | 3.39       | 3.39       | 3.39       |   0.0 | 98.51
-Neigh   | 0          | 0          | 0          |   0.0 |  0.00
-Comm    | 0.011697   | 0.011697   | 0.011697   |   0.0 |  0.34
-Output  | 0.004827   | 0.004827   | 0.004827   |   0.0 |  0.14
-Modify  | 0.030553   | 0.030553   | 0.030553   |   0.0 |  0.89
-Other   |            | 0.004115   |            |       |  0.12
+Pair    | 0.17462    | 0.17462    | 0.17462    |   0.0 | 43.50
+Neigh   | 0.20894    | 0.20894    | 0.20894    |   0.0 | 52.05
+Comm    | 0.004873   | 0.004873   | 0.004873   |   0.0 |  1.21
+Output  | 0.001432   | 0.001432   | 0.001432   |   0.0 |  0.36
+Modify  | 0.002284   | 0.002284   | 0.002284   |   0.0 |  0.57
+Other   |            | 0.009305   |            |       |  2.32
 
-Nlocal:          24000 ave       24000 max       24000 min
+Nlocal:           1280 ave        1280 max        1280 min
 Histogram: 1 0 0 0 0 0 0 0 0 0
-Nghost:          27483 ave       27483 max       27483 min
+Nghost:           4500 ave        4500 max        4500 min
 Histogram: 1 0 0 0 0 0 0 0 0 0
-Neighs:     2.7263e+06 ave  2.7263e+06 max  2.7263e+06 min
+Neighs:          94836 ave       94836 max       94836 min
 Histogram: 1 0 0 0 0 0 0 0 0 0
 
-Total # of neighbors = 2726297
-Ave neighs/atom = 113.59571
-Neighbor list builds = 0
-Dangerous builds = 0
+Total # of neighbors = 94836
+Ave neighs/atom = 74.090625
+Neighbor list builds = 100
+Dangerous builds not checked
 write_data data/lattice_final.lmp
 
 System init for write_data ...
@@ -668,721 +663,407 @@ reset_timestep 0
 
 
 
+
+
+
+
 # 热导率计算
 
 # 设置热源、冷源区域
 
+# 换区域
 
+variable lattice_x_min_temp equal ${lattice_x_max_1}/20
 
-variable lattice_x_min_temp equal ${diff_x}/10
+variable lattice_x_min_temp equal 72.2/20
 
-variable lattice_x_min_temp equal 107.3975/10
+variable lattice_x_min_temp_1 equal ${lattice_x_min_temp}*2
 
-variable lattice_x_min_temp_2 equal ${lattice_x_min_temp}*2
+variable lattice_x_min_temp_1 equal 3.61*2
 
-variable lattice_x_min_temp_2 equal 10.73975*2
+variable lattice_x_max_temp_2 equal ${lattice_x_max_1}-${lattice_x_min_temp}
 
-variable lattice_x_max_temp equal ${lattice_x_max_1}-(${lattice_x_max_1}-${diff_x})/10
+variable lattice_x_max_temp_2 equal 72.2-${lattice_x_min_temp}
 
-variable lattice_x_max_temp equal 213.9-(${lattice_x_max_1}-${diff_x})/10
+variable lattice_x_max_temp_2 equal 72.2-3.61
 
-variable lattice_x_max_temp equal 213.9-(213.9-${diff_x})/10
+variable lattice_x_max_temp_3 equal ${lattice_x_max_1}-2*${lattice_x_min_temp}
 
-variable lattice_x_max_temp equal 213.9-(213.9-107.3975)/10
+variable lattice_x_max_temp_3 equal 72.2-2*${lattice_x_min_temp}
 
-variable lattice_x_max_temp_2 equal ${lattice_x_max_temp}-(${lattice_x_max_1}-${diff_x})/10
+variable lattice_x_max_temp_3 equal 72.2-2*3.61
 
-variable lattice_x_max_temp_2 equal 203.24975-(${lattice_x_max_1}-${diff_x})/10
+region          hot block ${lattice_x_min_temp} ${lattice_x_min_temp_1} INF INF INF INF
 
-variable lattice_x_max_temp_2 equal 203.24975-(213.9-${diff_x})/10
+region          hot block 3.61 ${lattice_x_min_temp_1} INF INF INF INF
 
-variable lattice_x_max_temp_2 equal 203.24975-(213.9-107.3975)/10
+region          hot block 3.61 7.22 INF INF INF INF
 
-region          hot block ${lattice_x_min_temp} ${lattice_x_min_temp_2} INF INF INF INF
+region          cold block ${lattice_x_max_temp_3} ${lattice_x_max_temp_2} INF INF INF INF
 
-region          hot block 10.73975 ${lattice_x_min_temp_2} INF INF INF INF
+region          cold block 64.98 ${lattice_x_max_temp_2} INF INF INF INF
 
-region          hot block 10.73975 21.4795 INF INF INF INF
+region          cold block 64.98 68.59 INF INF INF INF
 
-region          cold block ${lattice_x_max_temp_2} ${lattice_x_max_temp} INF INF INF INF
-
-region          cold block 192.5995 ${lattice_x_max_temp} INF INF INF INF
-
-region          cold block 192.5995 203.24975 INF INF INF INF
-
-
-
-variable heat_flux_temp equal -${heat_flux}
-
-variable heat_flux_temp equal -8
-
-fix             hot all heat 1 ${heat_flux} region hot
-
-fix             hot all heat 1 8 region hot
-
-fix             cold all heat 1 ${heat_flux_temp} region cold
-
-fix             cold all heat 1 -8 region cold
+# 计算冷热源区域温度
 
 compute         Thot all temp/region hot
 
 compute         Tcold all temp/region cold
 
+# 设定nve系综
 
+fix		iterate_heat all nve
 
-variable lattice_x_min_temp_3 equal ${lattice_x_min_temp}*3
+# 热源处持续输入热量
 
-variable lattice_x_min_temp_3 equal 10.73975*3
+fix             hot all heat 1 ${heat_flux} region hot
 
-variable lattice_x_min_temp_4 equal ${lattice_x_min_temp}*4
+fix             hot all heat 1 1.64 region hot
 
-variable lattice_x_min_temp_4 equal 10.73975*4
+# 冷源处持续抽走热量
 
-variable lattice_x_min_temp_5 equal ${lattice_x_min_temp}*5
+variable heat_flux_temp equal -${heat_flux}
 
-variable lattice_x_min_temp_5 equal 10.73975*5
+variable heat_flux_temp equal -1.64
 
-variable lattice_x_min_temp_6 equal ${lattice_x_min_temp}*6
+fix             cold all heat 1 ${heat_flux_temp} region cold
 
-variable lattice_x_min_temp_6 equal 10.73975*6
+fix             cold all heat 1 -1.64 region cold
 
-variable lattice_x_min_temp_7 equal ${lattice_x_min_temp}*7
+# 设定热力学参数输出
 
-variable lattice_x_min_temp_7 equal 10.73975*7
+#c_是提取compute的结果
 
-variable lattice_x_min_temp_8 equal ${lattice_x_min_temp}*8
 
-variable lattice_x_min_temp_8 equal 10.73975*8
 
-variable lattice_x_min_temp_9 equal ${lattice_x_min_temp}*9
+# 运行1000步
 
-variable lattice_x_min_temp_9 equal 10.73975*9
+variable sim_steps_temp equal ${sim_steps}/10
 
-variable lattice_x_min_temp_10 equal ${lattice_x_min_temp}*10
+variable sim_steps_temp equal 2500/10
 
-variable lattice_x_min_temp_10 equal 10.73975*10
 
-region chunk_1 block 0 ${lattice_x_min_temp} INF INF INF INF
 
-region chunk_1 block 0 10.73975 INF INF INF INF
+compute		ke all ke/atom
 
-region chunk_2 block ${lattice_x_min_temp} ${lattice_x_min_temp_2} INF INF INF INF
+# 根据原子动能计算原子温度
 
-region chunk_2 block 10.73975 ${lattice_x_min_temp_2} INF INF INF INF
+variable	temp atom c_ke/(1.5*8.625e-5)
 
-region chunk_2 block 10.73975 21.4795 INF INF INF INF
+compute         layers all chunk/atom bin/1d x lower 0.05 units reduced
 
-region chunk_3 block ${lattice_x_min_temp_2} ${lattice_x_min_temp_3} INF INF INF INF
 
-region chunk_3 block 21.4795 ${lattice_x_min_temp_3} INF INF INF INF
-
-region chunk_3 block 21.4795 32.21925 INF INF INF INF
-
-region chunk_4 block ${lattice_x_min_temp_3} ${lattice_x_min_temp_4} INF INF INF INF
-
-region chunk_4 block 32.21925 ${lattice_x_min_temp_4} INF INF INF INF
-
-region chunk_4 block 32.21925 42.959 INF INF INF INF
-
-region chunk_5 block ${lattice_x_min_temp_4} ${lattice_x_min_temp_5} INF INF INF INF
-
-region chunk_5 block 42.959 ${lattice_x_min_temp_5} INF INF INF INF
-
-region chunk_5 block 42.959 53.69875 INF INF INF INF
-
-region chunk_6 block ${lattice_x_min_temp_5} ${lattice_x_min_temp_6} INF INF INF INF
-
-region chunk_6 block 53.69875 ${lattice_x_min_temp_6} INF INF INF INF
-
-region chunk_6 block 53.69875 64.4385 INF INF INF INF
-
-region chunk_7 block ${lattice_x_min_temp_6} ${lattice_x_min_temp_7} INF INF INF INF
-
-region chunk_7 block 64.4385 ${lattice_x_min_temp_7} INF INF INF INF
-
-region chunk_7 block 64.4385 75.17825 INF INF INF INF
-
-region chunk_8 block ${lattice_x_min_temp_7} ${lattice_x_min_temp_8} INF INF INF INF
-
-region chunk_8 block 75.17825 ${lattice_x_min_temp_8} INF INF INF INF
-
-region chunk_8 block 75.17825 85.918 INF INF INF INF
-
-region chunk_9 block ${lattice_x_min_temp_8} ${lattice_x_min_temp_9} INF INF INF INF
-
-region chunk_9 block 85.918 ${lattice_x_min_temp_9} INF INF INF INF
-
-region chunk_9 block 85.918 96.65775 INF INF INF INF
-
-region chunk_10 block ${lattice_x_min_temp_9} ${lattice_x_min_temp_10} INF INF INF INF
-
-region chunk_10 block 96.65775 ${lattice_x_min_temp_10} INF INF INF INF
-
-region chunk_10 block 96.65775 107.3975 INF INF INF INF
-
-compute         Tchunk_1 all temp/region chunk_1
-
-compute         Tchunk_2 all temp/region chunk_2
-
-compute         Tchunk_3 all temp/region chunk_3
-
-compute         Tchunk_4 all temp/region chunk_4
-
-compute         Tchunk_5 all temp/region chunk_5
-
-compute         Tchunk_6 all temp/region chunk_6
-
-compute         Tchunk_7 all temp/region chunk_7
-
-compute         Tchunk_8 all temp/region chunk_8
-
-compute         Tchunk_9 all temp/region chunk_9
-
-compute         Tchunk_10 all temp/region chunk_10
-
-
-
-variable lattice_x_max_temp_3 equal ${lattice_x_max_temp_2}-(${lattice_x_max_1}-${diff_x})/10
-
-variable lattice_x_max_temp_3 equal 192.5995-(${lattice_x_max_1}-${diff_x})/10
-
-variable lattice_x_max_temp_3 equal 192.5995-(213.9-${diff_x})/10
-
-variable lattice_x_max_temp_3 equal 192.5995-(213.9-107.3975)/10
-
-variable lattice_x_max_temp_4 equal ${lattice_x_max_temp_3}-(${lattice_x_max_1}-${diff_x})/10
-
-variable lattice_x_max_temp_4 equal 181.94925-(${lattice_x_max_1}-${diff_x})/10
-
-variable lattice_x_max_temp_4 equal 181.94925-(213.9-${diff_x})/10
-
-variable lattice_x_max_temp_4 equal 181.94925-(213.9-107.3975)/10
-
-variable lattice_x_max_temp_5 equal ${lattice_x_max_temp_4}-(${lattice_x_max_1}-${diff_x})/10
-
-variable lattice_x_max_temp_5 equal 171.299-(${lattice_x_max_1}-${diff_x})/10
-
-variable lattice_x_max_temp_5 equal 171.299-(213.9-${diff_x})/10
-
-variable lattice_x_max_temp_5 equal 171.299-(213.9-107.3975)/10
-
-variable lattice_x_max_temp_6 equal ${lattice_x_max_temp_5}-(${lattice_x_max_1}-${diff_x})/10
-
-variable lattice_x_max_temp_6 equal 160.64875-(${lattice_x_max_1}-${diff_x})/10
-
-variable lattice_x_max_temp_6 equal 160.64875-(213.9-${diff_x})/10
-
-variable lattice_x_max_temp_6 equal 160.64875-(213.9-107.3975)/10
-
-variable lattice_x_max_temp_7 equal ${lattice_x_max_temp_6}-(${lattice_x_max_1}-${diff_x})/10
-
-variable lattice_x_max_temp_7 equal 149.9985-(${lattice_x_max_1}-${diff_x})/10
-
-variable lattice_x_max_temp_7 equal 149.9985-(213.9-${diff_x})/10
-
-variable lattice_x_max_temp_7 equal 149.9985-(213.9-107.3975)/10
-
-variable lattice_x_max_temp_8 equal ${lattice_x_max_temp_7}-(${lattice_x_max_1}-${diff_x})/10
-
-variable lattice_x_max_temp_8 equal 139.34825-(${lattice_x_max_1}-${diff_x})/10
-
-variable lattice_x_max_temp_8 equal 139.34825-(213.9-${diff_x})/10
-
-variable lattice_x_max_temp_8 equal 139.34825-(213.9-107.3975)/10
-
-variable lattice_x_max_temp_9 equal ${lattice_x_max_temp_8}-(${lattice_x_max_1}-${diff_x})/10
-
-variable lattice_x_max_temp_9 equal 128.698-(${lattice_x_max_1}-${diff_x})/10
-
-variable lattice_x_max_temp_9 equal 128.698-(213.9-${diff_x})/10
-
-variable lattice_x_max_temp_9 equal 128.698-(213.9-107.3975)/10
-
-variable lattice_x_max_temp_10 equal ${lattice_x_max_temp_9}-(${lattice_x_max_1}-${diff_x})/10
-
-variable lattice_x_max_temp_10 equal 118.04775-(${lattice_x_max_1}-${diff_x})/10
-
-variable lattice_x_max_temp_10 equal 118.04775-(213.9-${diff_x})/10
-
-variable lattice_x_max_temp_10 equal 118.04775-(213.9-107.3975)/10
-
-region chunk_11 block ${lattice_x_max_temp_10} ${lattice_x_max_temp_9} INF INF INF INF
-
-region chunk_11 block 107.3975 ${lattice_x_max_temp_9} INF INF INF INF
-
-region chunk_11 block 107.3975 118.04775 INF INF INF INF
-
-region chunk_12 block ${lattice_x_max_temp_9} ${lattice_x_max_temp_8} INF INF INF INF
-
-region chunk_12 block 118.04775 ${lattice_x_max_temp_8} INF INF INF INF
-
-region chunk_12 block 118.04775 128.698 INF INF INF INF
-
-region chunk_13 block ${lattice_x_max_temp_8} ${lattice_x_max_temp_7} INF INF INF INF
-
-region chunk_13 block 128.698 ${lattice_x_max_temp_7} INF INF INF INF
-
-region chunk_13 block 128.698 139.34825 INF INF INF INF
-
-region chunk_14 block ${lattice_x_max_temp_7} ${lattice_x_max_temp_6} INF INF INF INF
-
-region chunk_14 block 139.34825 ${lattice_x_max_temp_6} INF INF INF INF
-
-region chunk_14 block 139.34825 149.9985 INF INF INF INF
-
-region chunk_15 block ${lattice_x_max_temp_6} ${lattice_x_max_temp_5} INF INF INF INF
-
-region chunk_15 block 149.9985 ${lattice_x_max_temp_5} INF INF INF INF
-
-region chunk_15 block 149.9985 160.64875 INF INF INF INF
-
-region chunk_16 block ${lattice_x_max_temp_5} ${lattice_x_max_temp_4} INF INF INF INF
-
-region chunk_16 block 160.64875 ${lattice_x_max_temp_4} INF INF INF INF
-
-region chunk_16 block 160.64875 171.299 INF INF INF INF
-
-region chunk_17 block ${lattice_x_max_temp_4} ${lattice_x_max_temp_3} INF INF INF INF
-
-region chunk_17 block 171.299 ${lattice_x_max_temp_3} INF INF INF INF
-
-region chunk_17 block 171.299 181.94925 INF INF INF INF
-
-region chunk_18 block ${lattice_x_max_temp_3} ${lattice_x_max_temp_2} INF INF INF INF
-
-region chunk_18 block 181.94925 ${lattice_x_max_temp_2} INF INF INF INF
-
-region chunk_18 block 181.94925 192.5995 INF INF INF INF
-
-region chunk_19 block ${lattice_x_max_temp_2} ${lattice_x_max_temp} INF INF INF INF
-
-region chunk_19 block 192.5995 ${lattice_x_max_temp} INF INF INF INF
-
-region chunk_19 block 192.5995 203.24975 INF INF INF INF
-
-region chunk_20 block ${lattice_x_max_temp} ${lattice_x_max_1} INF INF INF INF
-
-region chunk_20 block 203.24975 ${lattice_x_max_1} INF INF INF INF
-
-region chunk_20 block 203.24975 213.9 INF INF INF INF
-
-compute         Tchunk_11 all temp/region chunk_11
-
-compute         Tchunk_12 all temp/region chunk_12
-
-compute         Tchunk_13 all temp/region chunk_13
-
-compute         Tchunk_14 all temp/region chunk_14
-
-compute         Tchunk_15 all temp/region chunk_15
-
-compute         Tchunk_16 all temp/region chunk_16
-
-compute         Tchunk_17 all temp/region chunk_17
-
-compute         Tchunk_18 all temp/region chunk_18
-
-compute         Tchunk_19 all temp/region chunk_19
-
-compute         Tchunk_20 all temp/region chunk_20
 
 variable sim_steps_thermo equal ${sim_steps}/10
 
-variable sim_steps_thermo equal 4000/10
+variable sim_steps_thermo equal 2500/10
 
-fix average all ave/time 1 10 ${sim_steps_thermo} c_Tchunk_1 c_Tchunk_2 c_Tchunk_3 c_Tchunk_4 c_Tchunk_5 c_Tchunk_6 c_Tchunk_7 c_Tchunk_8 c_Tchunk_9 c_Tchunk_10  c_Tchunk_11 c_Tchunk_12 c_Tchunk_13 c_Tchunk_14 c_Tchunk_15 c_Tchunk_16 c_Tchunk_17 c_Tchunk_18 c_Tchunk_19 c_Tchunk_20 file result_heat_2.txt
+# 计算块内原子温度
 
-fix average all ave/time 1 10 400 c_Tchunk_1 c_Tchunk_2 c_Tchunk_3 c_Tchunk_4 c_Tchunk_5 c_Tchunk_6 c_Tchunk_7 c_Tchunk_8 c_Tchunk_9 c_Tchunk_10  c_Tchunk_11 c_Tchunk_12 c_Tchunk_13 c_Tchunk_14 c_Tchunk_15 c_Tchunk_16 c_Tchunk_17 c_Tchunk_18 c_Tchunk_19 c_Tchunk_20 file result_heat_2.txt
+fix		2 all ave/chunk 1 50 ${sim_steps_thermo} layers v_temp file result_heat_1.txt
+
+fix		2 all ave/chunk 1 50 250 layers v_temp file result_heat_1.txt
+
+# 计算温差
+
+variable        tdiff equal f_2[2][3]-f_2[19][3]
+
+# 计算平均温差
+
+fix             ave all ave/time 1 1 ${sim_steps_thermo} v_tdiff ave running start 0
+
+fix             ave all ave/time 1 1 250 v_tdiff ave running start 0
+
+# 输出平均温差
 
 
 
-fix		        1 all nve
-
-
-
-
+thermo_style    custom step temp c_Thot c_Tcold v_tdiff
 
 thermo	        ${sim_steps_thermo}
 
-thermo	        400
+thermo	        250
 
-thermo_style    custom step temp c_Thot c_Tcold
 
-variable final_steps equal ${sim_steps_thermo}-100
 
-variable final_steps equal 400-100
+fix final all print ${sim_steps_thermo} '${tdiff}' file final_tdiff.txt screen no
 
-run ${sim_steps_thermo}
+fix final all print 250 '${tdiff}' file final_tdiff.txt screen no
 
-run 400
+dump result_pdos all custom 100 result_pdos.txt id vx vy vz
 
-Per MPI rank memory allocation (min/avg/max) = 23.04 | 23.04 | 23.04 Mbytes
-   Step          Temp          c_Thot        c_Tcold    
-         0   299.30753      308.41903      306.78013    
-       400   297.60128      339.74438      279.17438    
-Loop time of 13.9589 on 1 procs for 400 steps with 24000 atoms
 
-Performance: 24.758 ns/day, 0.969 hours/ns, 28.656 timesteps/s, 687.735 katom-step/s
-86.9% CPU use with 1 MPI tasks x 1 OpenMP threads
 
-MPI task timing breakdown:
-Section |  min time  |  avg time  |  max time  |%varavg| %total
----------------------------------------------------------------
-Pair    | 13.531     | 13.531     | 13.531     |   0.0 | 96.94
-Neigh   | 0.040187   | 0.040187   | 0.040187   |   0.0 |  0.29
-Comm    | 0.044523   | 0.044523   | 0.044523   |   0.0 |  0.32
-Output  | 0.00069    | 0.00069    | 0.00069    |   0.0 |  0.00
-Modify  | 0.32451    | 0.32451    | 0.32451    |   0.0 |  2.32
-Other   |            | 0.01773    |            |       |  0.13
+run ${sim_steps_temp}
 
-Nlocal:          24000 ave       24000 max       24000 min
-Histogram: 1 0 0 0 0 0 0 0 0 0
-Nghost:          26970 ave       26970 max       26970 min
-Histogram: 1 0 0 0 0 0 0 0 0 0
-Neighs:    2.73661e+06 ave 2.73661e+06 max 2.73661e+06 min
-Histogram: 1 0 0 0 0 0 0 0 0 0
+run 250
 
-Total # of neighbors = 2736607
-Ave neighs/atom = 114.02529
-Neighbor list builds = 1
-Dangerous builds = 0
-run ${sim_steps_thermo}
+Per MPI rank memory allocation (min/avg/max) = 3.71 | 3.71 | 3.71 Mbytes
+   Step          Temp          c_Thot        c_Tcold        v_tdiff    
+         0   298.20634      299.94539      276.50748      0            
+       250   338.19372      389.72221      291.33414      133.6579     
+Loop time of 1.04529 on 1 procs for 250 steps with 1280 atoms
 
-run 400
-
-Per MPI rank memory allocation (min/avg/max) = 23.04 | 23.04 | 23.04 Mbytes
-   Step          Temp          c_Thot        c_Tcold    
-       400   297.60128      339.74438      279.17438    
-       800   299.62436      360.84777      244.01504    
-Loop time of 13.9671 on 1 procs for 400 steps with 24000 atoms
-
-Performance: 24.744 ns/day, 0.970 hours/ns, 28.639 timesteps/s, 687.331 katom-step/s
-85.1% CPU use with 1 MPI tasks x 1 OpenMP threads
+Performance: 206.642 ns/day, 0.116 hours/ns, 239.169 timesteps/s, 306.136 katom-step/s
+20.9% CPU use with 1 MPI tasks x 1 OpenMP threads
 
 MPI task timing breakdown:
 Section |  min time  |  avg time  |  max time  |%varavg| %total
 ---------------------------------------------------------------
-Pair    | 13.578     | 13.578     | 13.578     |   0.0 | 97.22
-Neigh   | 0          | 0          | 0          |   0.0 |  0.00
-Comm    | 0.044829   | 0.044829   | 0.044829   |   0.0 |  0.32
-Output  | 0.00063    | 0.00063    | 0.00063    |   0.0 |  0.00
-Modify  | 0.32623    | 0.32623    | 0.32623    |   0.0 |  2.34
-Other   |            | 0.01717    |            |       |  0.12
+Pair    | 0.44832    | 0.44832    | 0.44832    |   0.0 | 42.89
+Neigh   | 0.54147    | 0.54147    | 0.54147    |   0.0 | 51.80
+Comm    | 0.012129   | 0.012129   | 0.012129   |   0.0 |  1.16
+Output  | 0.002498   | 0.002498   | 0.002498   |   0.0 |  0.24
+Modify  | 0.017834   | 0.017834   | 0.017834   |   0.0 |  1.71
+Other   |            | 0.02303    |            |       |  2.20
 
-Nlocal:          24000 ave       24000 max       24000 min
+Nlocal:           1280 ave        1280 max        1280 min
 Histogram: 1 0 0 0 0 0 0 0 0 0
-Nghost:          27807 ave       27807 max       27807 min
+Nghost:           4500 ave        4500 max        4500 min
 Histogram: 1 0 0 0 0 0 0 0 0 0
-Neighs:    2.71847e+06 ave 2.71847e+06 max 2.71847e+06 min
+Neighs:          97145 ave       97145 max       97145 min
 Histogram: 1 0 0 0 0 0 0 0 0 0
 
-Total # of neighbors = 2718469
-Ave neighs/atom = 113.26954
-Neighbor list builds = 0
-Dangerous builds = 0
-run ${sim_steps_thermo}
+Total # of neighbors = 97145
+Ave neighs/atom = 75.894531
+Neighbor list builds = 250
+Dangerous builds not checked
+run ${sim_steps_temp}
 
-run 400
+run 250
 
-Per MPI rank memory allocation (min/avg/max) = 23.04 | 23.04 | 23.04 Mbytes
-   Step          Temp          c_Thot        c_Tcold    
-       800   299.62436      360.84777      244.01504    
-      1200   293.61769      367.58209      239.49728    
-Loop time of 13.7085 on 1 procs for 400 steps with 24000 atoms
+Per MPI rank memory allocation (min/avg/max) = 5.25 | 5.25 | 5.25 Mbytes
+   Step          Temp          c_Thot        c_Tcold        v_tdiff    
+       250   338.19372      389.72221      291.33414      133.6579     
+       500   328.48461      461.79494      203.96775      188.05935    
+Loop time of 0.990598 on 1 procs for 250 steps with 1280 atoms
 
-Performance: 25.211 ns/day, 0.952 hours/ns, 29.179 timesteps/s, 700.296 katom-step/s
-85.9% CPU use with 1 MPI tasks x 1 OpenMP threads
+Performance: 218.050 ns/day, 0.110 hours/ns, 252.373 timesteps/s, 323.037 katom-step/s
+18.9% CPU use with 1 MPI tasks x 1 OpenMP threads
 
 MPI task timing breakdown:
 Section |  min time  |  avg time  |  max time  |%varavg| %total
 ---------------------------------------------------------------
-Pair    | 13.289     | 13.289     | 13.289     |   0.0 | 96.94
-Neigh   | 0.039188   | 0.039188   | 0.039188   |   0.0 |  0.29
-Comm    | 0.043323   | 0.043323   | 0.043323   |   0.0 |  0.32
-Output  | 0.000661   | 0.000661   | 0.000661   |   0.0 |  0.00
-Modify  | 0.31852    | 0.31852    | 0.31852    |   0.0 |  2.32
-Other   |            | 0.01734    |            |       |  0.13
+Pair    | 0.42176    | 0.42176    | 0.42176    |   0.0 | 42.58
+Neigh   | 0.51548    | 0.51548    | 0.51548    |   0.0 | 52.04
+Comm    | 0.011245   | 0.011245   | 0.011245   |   0.0 |  1.14
+Output  | 0.003774   | 0.003774   | 0.003774   |   0.0 |  0.38
+Modify  | 0.016313   | 0.016313   | 0.016313   |   0.0 |  1.65
+Other   |            | 0.02202    |            |       |  2.22
 
-Nlocal:          24000 ave       24000 max       24000 min
+Nlocal:           1280 ave        1280 max        1280 min
 Histogram: 1 0 0 0 0 0 0 0 0 0
-Nghost:          27013 ave       27013 max       27013 min
+Nghost:           4500 ave        4500 max        4500 min
 Histogram: 1 0 0 0 0 0 0 0 0 0
-Neighs:    2.72331e+06 ave 2.72331e+06 max 2.72331e+06 min
+Neighs:          98725 ave       98725 max       98725 min
 Histogram: 1 0 0 0 0 0 0 0 0 0
 
-Total # of neighbors = 2723306
-Ave neighs/atom = 113.47108
-Neighbor list builds = 1
-Dangerous builds = 0
-run ${sim_steps_thermo}
+Total # of neighbors = 98725
+Ave neighs/atom = 77.128906
+Neighbor list builds = 250
+Dangerous builds not checked
+run ${sim_steps_temp}
 
-run 400
+run 250
 
-Per MPI rank memory allocation (min/avg/max) = 23.04 | 23.04 | 23.04 Mbytes
-   Step          Temp          c_Thot        c_Tcold    
-      1200   293.61769      367.58209      239.49728    
-      1600   295.35298      395.98363      242.31333    
-Loop time of 13.6724 on 1 procs for 400 steps with 24000 atoms
+Per MPI rank memory allocation (min/avg/max) = 5.25 | 5.25 | 5.25 Mbytes
+   Step          Temp          c_Thot        c_Tcold        v_tdiff    
+       500   328.48461      461.79494      203.96775      188.05935    
+       750   291.73384      316.62773      197.58769      148.03707    
+Loop time of 0.980182 on 1 procs for 250 steps with 1280 atoms
 
-Performance: 25.277 ns/day, 0.949 hours/ns, 29.256 timesteps/s, 702.143 katom-step/s
-84.6% CPU use with 1 MPI tasks x 1 OpenMP threads
+Performance: 220.367 ns/day, 0.109 hours/ns, 255.055 timesteps/s, 326.470 katom-step/s
+23.9% CPU use with 1 MPI tasks x 1 OpenMP threads
 
 MPI task timing breakdown:
 Section |  min time  |  avg time  |  max time  |%varavg| %total
 ---------------------------------------------------------------
-Pair    | 13.208     | 13.208     | 13.208     |   0.0 | 96.60
-Neigh   | 0.084773   | 0.084773   | 0.084773   |   0.0 |  0.62
-Comm    | 0.044255   | 0.044255   | 0.044255   |   0.0 |  0.32
-Output  | 0.000791   | 0.000791   | 0.000791   |   0.0 |  0.01
-Modify  | 0.31649    | 0.31649    | 0.31649    |   0.0 |  2.31
-Other   |            | 0.01796    |            |       |  0.13
+Pair    | 0.41969    | 0.41969    | 0.41969    |   0.0 | 42.82
+Neigh   | 0.51207    | 0.51207    | 0.51207    |   0.0 | 52.24
+Comm    | 0.01078    | 0.01078    | 0.01078    |   0.0 |  1.10
+Output  | 0.002448   | 0.002448   | 0.002448   |   0.0 |  0.25
+Modify  | 0.015707   | 0.015707   | 0.015707   |   0.0 |  1.60
+Other   |            | 0.01949    |            |       |  1.99
 
-Nlocal:          24000 ave       24000 max       24000 min
+Nlocal:           1280 ave        1280 max        1280 min
 Histogram: 1 0 0 0 0 0 0 0 0 0
-Nghost:          27401 ave       27401 max       27401 min
+Nghost:           4500 ave        4500 max        4500 min
 Histogram: 1 0 0 0 0 0 0 0 0 0
-Neighs:    2.70257e+06 ave 2.70257e+06 max 2.70257e+06 min
+Neighs:          95017 ave       95017 max       95017 min
 Histogram: 1 0 0 0 0 0 0 0 0 0
 
-Total # of neighbors = 2702567
-Ave neighs/atom = 112.60696
-Neighbor list builds = 2
-Dangerous builds = 0
-run ${sim_steps_thermo}
+Total # of neighbors = 95017
+Ave neighs/atom = 74.232031
+Neighbor list builds = 250
+Dangerous builds not checked
+run ${sim_steps_temp}
 
-run 400
+run 250
 
-Per MPI rank memory allocation (min/avg/max) = 23.04 | 23.04 | 23.04 Mbytes
-   Step          Temp          c_Thot        c_Tcold    
-      1600   295.35298      395.98363      242.31333    
-      2000   301.57212      390.3656       240.44375    
-Loop time of 13.663 on 1 procs for 400 steps with 24000 atoms
+Per MPI rank memory allocation (min/avg/max) = 5.25 | 5.25 | 5.25 Mbytes
+   Step          Temp          c_Thot        c_Tcold        v_tdiff    
+       750   291.73384      316.62773      197.58769      148.03707    
+      1000   333.34674      430.17598      246.46113      189.33917    
+Loop time of 0.987389 on 1 procs for 250 steps with 1280 atoms
 
-Performance: 25.295 ns/day, 0.949 hours/ns, 29.276 timesteps/s, 702.629 katom-step/s
-85.5% CPU use with 1 MPI tasks x 1 OpenMP threads
+Performance: 218.759 ns/day, 0.110 hours/ns, 253.193 timesteps/s, 324.087 katom-step/s
+33.2% CPU use with 1 MPI tasks x 1 OpenMP threads
 
 MPI task timing breakdown:
 Section |  min time  |  avg time  |  max time  |%varavg| %total
 ---------------------------------------------------------------
-Pair    | 13.198     | 13.198     | 13.198     |   0.0 | 96.59
-Neigh   | 0.083791   | 0.083791   | 0.083791   |   0.0 |  0.61
-Comm    | 0.044843   | 0.044843   | 0.044843   |   0.0 |  0.33
-Output  | 0.000721   | 0.000721   | 0.000721   |   0.0 |  0.01
-Modify  | 0.31802    | 0.31802    | 0.31802    |   0.0 |  2.33
-Other   |            | 0.01787    |            |       |  0.13
+Pair    | 0.4218     | 0.4218     | 0.4218     |   0.0 | 42.72
+Neigh   | 0.51539    | 0.51539    | 0.51539    |   0.0 | 52.20
+Comm    | 0.010584   | 0.010584   | 0.010584   |   0.0 |  1.07
+Output  | 0.003734   | 0.003734   | 0.003734   |   0.0 |  0.38
+Modify  | 0.015876   | 0.015876   | 0.015876   |   0.0 |  1.61
+Other   |            | 0.02       |            |       |  2.03
 
-Nlocal:          24000 ave       24000 max       24000 min
+Nlocal:           1280 ave        1280 max        1280 min
 Histogram: 1 0 0 0 0 0 0 0 0 0
-Nghost:          27838 ave       27838 max       27838 min
+Nghost:           4500 ave        4500 max        4500 min
 Histogram: 1 0 0 0 0 0 0 0 0 0
-Neighs:    2.73554e+06 ave 2.73554e+06 max 2.73554e+06 min
+Neighs:          97039 ave       97039 max       97039 min
 Histogram: 1 0 0 0 0 0 0 0 0 0
 
-Total # of neighbors = 2735539
-Ave neighs/atom = 113.98079
-Neighbor list builds = 2
-Dangerous builds = 0
-run ${sim_steps_thermo}
+Total # of neighbors = 97039
+Ave neighs/atom = 75.811719
+Neighbor list builds = 250
+Dangerous builds not checked
+run ${sim_steps_temp}
 
-run 400
+run 250
 
-Per MPI rank memory allocation (min/avg/max) = 23.04 | 23.04 | 23.04 Mbytes
-   Step          Temp          c_Thot        c_Tcold    
-      2000   301.57212      390.3656       240.44375    
-      2400   301.1452       422.96913      237.02717    
-Loop time of 13.9434 on 1 procs for 400 steps with 24000 atoms
+Per MPI rank memory allocation (min/avg/max) = 5.25 | 5.25 | 5.25 Mbytes
+   Step          Temp          c_Thot        c_Tcold        v_tdiff    
+      1000   333.34674      430.17598      246.46113      189.33917    
+      1250   333.67655      375.87534      177.46192      193.07071    
+Loop time of 0.967399 on 1 procs for 250 steps with 1280 atoms
 
-Performance: 24.786 ns/day, 0.968 hours/ns, 28.687 timesteps/s, 688.498 katom-step/s
-90.4% CPU use with 1 MPI tasks x 1 OpenMP threads
+Performance: 223.279 ns/day, 0.107 hours/ns, 258.425 timesteps/s, 330.784 katom-step/s
+25.8% CPU use with 1 MPI tasks x 1 OpenMP threads
 
 MPI task timing breakdown:
 Section |  min time  |  avg time  |  max time  |%varavg| %total
 ---------------------------------------------------------------
-Pair    | 13.519     | 13.519     | 13.519     |   0.0 | 96.95
-Neigh   | 0.04052    | 0.04052    | 0.04052    |   0.0 |  0.29
-Comm    | 0.044424   | 0.044424   | 0.044424   |   0.0 |  0.32
-Output  | 0.000639   | 0.000639   | 0.000639   |   0.0 |  0.00
-Modify  | 0.3214     | 0.3214     | 0.3214     |   0.0 |  2.31
-Other   |            | 0.01775    |            |       |  0.13
+Pair    | 0.41337    | 0.41337    | 0.41337    |   0.0 | 42.73
+Neigh   | 0.50554    | 0.50554    | 0.50554    |   0.0 | 52.26
+Comm    | 0.010588   | 0.010588   | 0.010588   |   0.0 |  1.09
+Output  | 0.00254    | 0.00254    | 0.00254    |   0.0 |  0.26
+Modify  | 0.015894   | 0.015894   | 0.015894   |   0.0 |  1.64
+Other   |            | 0.01946    |            |       |  2.01
 
-Nlocal:          24000 ave       24000 max       24000 min
+Nlocal:           1280 ave        1280 max        1280 min
 Histogram: 1 0 0 0 0 0 0 0 0 0
-Nghost:          27782 ave       27782 max       27782 min
+Nghost:           4500 ave        4500 max        4500 min
 Histogram: 1 0 0 0 0 0 0 0 0 0
-Neighs:    2.73908e+06 ave 2.73908e+06 max 2.73908e+06 min
+Neighs:          98646 ave       98646 max       98646 min
 Histogram: 1 0 0 0 0 0 0 0 0 0
 
-Total # of neighbors = 2739079
-Ave neighs/atom = 114.12829
-Neighbor list builds = 1
-Dangerous builds = 0
-run ${sim_steps_thermo}
+Total # of neighbors = 98646
+Ave neighs/atom = 77.067188
+Neighbor list builds = 250
+Dangerous builds not checked
+run ${sim_steps_temp}
 
-run 400
+run 250
 
-Per MPI rank memory allocation (min/avg/max) = 23.04 | 23.04 | 23.04 Mbytes
-   Step          Temp          c_Thot        c_Tcold    
-      2400   301.1452       422.96913      237.02717    
-      2800   297.32664      395.17187      221.95271    
-Loop time of 13.73 on 1 procs for 400 steps with 24000 atoms
+Per MPI rank memory allocation (min/avg/max) = 5.25 | 5.25 | 5.25 Mbytes
+   Step          Temp          c_Thot        c_Tcold        v_tdiff    
+      1250   333.67655      375.87534      177.46192      193.07071    
+      1500   312.21341      355.80586      204.52648      183.80599    
+Loop time of 0.99136 on 1 procs for 250 steps with 1280 atoms
 
-Performance: 25.171 ns/day, 0.953 hours/ns, 29.133 timesteps/s, 699.197 katom-step/s
-73.4% CPU use with 1 MPI tasks x 1 OpenMP threads
+Performance: 217.883 ns/day, 0.110 hours/ns, 252.179 timesteps/s, 322.789 katom-step/s
+20.5% CPU use with 1 MPI tasks x 1 OpenMP threads
 
 MPI task timing breakdown:
 Section |  min time  |  avg time  |  max time  |%varavg| %total
 ---------------------------------------------------------------
-Pair    | 13.3       | 13.3       | 13.3       |   0.0 | 96.87
-Neigh   | 0.041037   | 0.041037   | 0.041037   |   0.0 |  0.30
-Comm    | 0.047482   | 0.047482   | 0.047482   |   0.0 |  0.35
-Output  | 0.000584   | 0.000584   | 0.000584   |   0.0 |  0.00
-Modify  | 0.32301    | 0.32301    | 0.32301    |   0.0 |  2.35
-Other   |            | 0.01788    |            |       |  0.13
+Pair    | 0.42413    | 0.42413    | 0.42413    |   0.0 | 42.78
+Neigh   | 0.51722    | 0.51722    | 0.51722    |   0.0 | 52.17
+Comm    | 0.010885   | 0.010885   | 0.010885   |   0.0 |  1.10
+Output  | 0.00372    | 0.00372    | 0.00372    |   0.0 |  0.38
+Modify  | 0.016036   | 0.016036   | 0.016036   |   0.0 |  1.62
+Other   |            | 0.01937    |            |       |  1.95
 
-Nlocal:          24000 ave       24000 max       24000 min
+Nlocal:           1280 ave        1280 max        1280 min
 Histogram: 1 0 0 0 0 0 0 0 0 0
-Nghost:          27046 ave       27046 max       27046 min
+Nghost:           4500 ave        4500 max        4500 min
 Histogram: 1 0 0 0 0 0 0 0 0 0
-Neighs:    2.70326e+06 ave 2.70326e+06 max 2.70326e+06 min
+Neighs:          94894 ave       94894 max       94894 min
 Histogram: 1 0 0 0 0 0 0 0 0 0
 
-Total # of neighbors = 2703260
-Ave neighs/atom = 112.63583
-Neighbor list builds = 1
-Dangerous builds = 0
-run ${sim_steps_thermo}
+Total # of neighbors = 94894
+Ave neighs/atom = 74.135937
+Neighbor list builds = 250
+Dangerous builds not checked
+run ${sim_steps_temp}
 
-run 400
+run 250
 
-Per MPI rank memory allocation (min/avg/max) = 23.04 | 23.04 | 23.04 Mbytes
-   Step          Temp          c_Thot        c_Tcold    
-      2800   297.32664      395.17187      221.95271    
-      3200   294.26598      407.78651      209.83251    
-Loop time of 14.5198 on 1 procs for 400 steps with 24000 atoms
+Per MPI rank memory allocation (min/avg/max) = 5.25 | 5.25 | 5.25 Mbytes
+   Step          Temp          c_Thot        c_Tcold        v_tdiff    
+      1500   312.21341      355.80586      204.52648      183.80599    
+      1750   333.36455      489.13557      273.45174      233.43839    
+Loop time of 0.988696 on 1 procs for 250 steps with 1280 atoms
 
-Performance: 23.802 ns/day, 1.008 hours/ns, 27.549 timesteps/s, 661.167 katom-step/s
-66.6% CPU use with 1 MPI tasks x 1 OpenMP threads
+Performance: 218.470 ns/day, 0.110 hours/ns, 252.858 timesteps/s, 323.659 katom-step/s
+28.4% CPU use with 1 MPI tasks x 1 OpenMP threads
 
 MPI task timing breakdown:
 Section |  min time  |  avg time  |  max time  |%varavg| %total
 ---------------------------------------------------------------
-Pair    | 14.019     | 14.019     | 14.019     |   0.0 | 96.55
-Neigh   | 0.087703   | 0.087703   | 0.087703   |   0.0 |  0.60
-Comm    | 0.055568   | 0.055568   | 0.055568   |   0.0 |  0.38
-Output  | 0.000463   | 0.000463   | 0.000463   |   0.0 |  0.00
-Modify  | 0.33687    | 0.33687    | 0.33687    |   0.0 |  2.32
-Other   |            | 0.01985    |            |       |  0.14
+Pair    | 0.42162    | 0.42162    | 0.42162    |   0.0 | 42.64
+Neigh   | 0.51817    | 0.51817    | 0.51817    |   0.0 | 52.41
+Comm    | 0.01082    | 0.01082    | 0.01082    |   0.0 |  1.09
+Output  | 0.002423   | 0.002423   | 0.002423   |   0.0 |  0.25
+Modify  | 0.015815   | 0.015815   | 0.015815   |   0.0 |  1.60
+Other   |            | 0.01985    |            |       |  2.01
 
-Nlocal:          24000 ave       24000 max       24000 min
+Nlocal:           1280 ave        1280 max        1280 min
 Histogram: 1 0 0 0 0 0 0 0 0 0
-Nghost:          27133 ave       27133 max       27133 min
+Nghost:           4500 ave        4500 max        4500 min
 Histogram: 1 0 0 0 0 0 0 0 0 0
-Neighs:    2.73841e+06 ave 2.73841e+06 max 2.73841e+06 min
+Neighs:          97097 ave       97097 max       97097 min
 Histogram: 1 0 0 0 0 0 0 0 0 0
 
-Total # of neighbors = 2738413
-Ave neighs/atom = 114.10054
-Neighbor list builds = 2
-Dangerous builds = 0
-run ${sim_steps_thermo}
+Total # of neighbors = 97097
+Ave neighs/atom = 75.857031
+Neighbor list builds = 250
+Dangerous builds not checked
+run ${sim_steps_temp}
 
-run 400
+run 250
 
-Per MPI rank memory allocation (min/avg/max) = 23.04 | 23.04 | 23.04 Mbytes
-   Step          Temp          c_Thot        c_Tcold    
-      3200   294.26598      407.78651      209.83251    
-      3600   293.17366      412.00992      216.80768    
-Loop time of 14.555 on 1 procs for 400 steps with 24000 atoms
+Per MPI rank memory allocation (min/avg/max) = 5.25 | 5.25 | 5.25 Mbytes
+   Step          Temp          c_Thot        c_Tcold        v_tdiff    
+      1750   333.36455      489.13557      273.45174      233.43839    
+      2000   332.98617      438.10129      209.47171      245.03576    
+Loop time of 0.986515 on 1 procs for 250 steps with 1280 atoms
 
-Performance: 23.744 ns/day, 1.011 hours/ns, 27.482 timesteps/s, 659.567 katom-step/s
-68.2% CPU use with 1 MPI tasks x 1 OpenMP threads
+Performance: 218.953 ns/day, 0.110 hours/ns, 253.417 timesteps/s, 324.374 katom-step/s
+26.9% CPU use with 1 MPI tasks x 1 OpenMP threads
 
 MPI task timing breakdown:
 Section |  min time  |  avg time  |  max time  |%varavg| %total
 ---------------------------------------------------------------
-Pair    | 14.06      | 14.06      | 14.06      |   0.0 | 96.60
-Neigh   | 0.087379   | 0.087379   | 0.087379   |   0.0 |  0.60
-Comm    | 0.05117    | 0.05117    | 0.05117    |   0.0 |  0.35
-Output  | 0.000471   | 0.000471   | 0.000471   |   0.0 |  0.00
-Modify  | 0.337      | 0.337      | 0.337      |   0.0 |  2.32
-Other   |            | 0.01918    |            |       |  0.13
+Pair    | 0.41901    | 0.41901    | 0.41901    |   0.0 | 42.47
+Neigh   | 0.51597    | 0.51597    | 0.51597    |   0.0 | 52.30
+Comm    | 0.011163   | 0.011163   | 0.011163   |   0.0 |  1.13
+Output  | 0.003637   | 0.003637   | 0.003637   |   0.0 |  0.37
+Modify  | 0.01631    | 0.01631    | 0.01631    |   0.0 |  1.65
+Other   |            | 0.02043    |            |       |  2.07
 
-Nlocal:          24000 ave       24000 max       24000 min
+Nlocal:           1280 ave        1280 max        1280 min
 Histogram: 1 0 0 0 0 0 0 0 0 0
-Nghost:          27938 ave       27938 max       27938 min
+Nghost:           4500 ave        4500 max        4500 min
 Histogram: 1 0 0 0 0 0 0 0 0 0
-Neighs:    2.71097e+06 ave 2.71097e+06 max 2.71097e+06 min
-Histogram: 1 0 0 0 0 0 0 0 0 0
-
-Total # of neighbors = 2710974
-Ave neighs/atom = 112.95725
-Neighbor list builds = 2
-Dangerous builds = 0
-run ${final_steps}
-
-run 300
-
-Per MPI rank memory allocation (min/avg/max) = 23.04 | 23.04 | 23.04 Mbytes
-   Step          Temp          c_Thot        c_Tcold    
-      3600   293.17366      412.00992      216.80768    
-      3900   300.51676      431            208.38399    
-Loop time of 10.5145 on 1 procs for 300 steps with 24000 atoms
-
-Performance: 24.652 ns/day, 0.974 hours/ns, 28.532 timesteps/s, 684.771 katom-step/s
-75.6% CPU use with 1 MPI tasks x 1 OpenMP threads
-
-MPI task timing breakdown:
-Section |  min time  |  avg time  |  max time  |%varavg| %total
----------------------------------------------------------------
-Pair    | 10.181     | 10.181     | 10.181     |   0.0 | 96.83
-Neigh   | 0.050935   | 0.050935   | 0.050935   |   0.0 |  0.48
-Comm    | 0.036698   | 0.036698   | 0.036698   |   0.0 |  0.35
-Output  | 0.000398   | 0.000398   | 0.000398   |   0.0 |  0.00
-Modify  | 0.2318     | 0.2318     | 0.2318     |   0.0 |  2.20
-Other   |            | 0.0139     |            |       |  0.13
-
-Nlocal:          24000 ave       24000 max       24000 min
-Histogram: 1 0 0 0 0 0 0 0 0 0
-Nghost:          27321 ave       27321 max       27321 min
-Histogram: 1 0 0 0 0 0 0 0 0 0
-Neighs:    2.71647e+06 ave 2.71647e+06 max 2.71647e+06 min
+Neighs:          98245 ave       98245 max       98245 min
 Histogram: 1 0 0 0 0 0 0 0 0 0
 
-Total # of neighbors = 2716466
-Ave neighs/atom = 113.18608
-Neighbor list builds = 1
-Dangerous builds = 0
-dump result_pdos all custom 10 result_pdos.txt id vx vy vz
-
-run 100
-
-Per MPI rank memory allocation (min/avg/max) = 25.77 | 25.77 | 25.77 Mbytes
-   Step          Temp          c_Thot        c_Tcold    
-      3900   300.51676      431            208.38399    
-      4000   300.05638      448.09008      214.25497    
-Loop time of 4.01893 on 1 procs for 100 steps with 24000 atoms
-
-Performance: 21.498 ns/day, 1.116 hours/ns, 24.882 timesteps/s, 597.174 katom-step/s
-30.3% CPU use with 1 MPI tasks x 1 OpenMP threads
-
-MPI task timing breakdown:
-Section |  min time  |  avg time  |  max time  |%varavg| %total
----------------------------------------------------------------
-Pair    | 3.6564     | 3.6564     | 3.6564     |   0.0 | 90.98
-Neigh   | 0          | 0          | 0          |   0.0 |  0.00
-Comm    | 0.015052   | 0.015052   | 0.015052   |   0.0 |  0.37
-Output  | 0.24058    | 0.24058    | 0.24058    |   0.0 |  5.99
-Modify  | 0.10206    | 0.10206    | 0.10206    |   0.0 |  2.54
-Other   |            | 0.004873   |            |       |  0.12
-
-Nlocal:          24000 ave       24000 max       24000 min
-Histogram: 1 0 0 0 0 0 0 0 0 0
-Nghost:          27231 ave       27231 max       27231 min
-Histogram: 1 0 0 0 0 0 0 0 0 0
-Neighs:    2.71714e+06 ave 2.71714e+06 max 2.71714e+06 min
-Histogram: 1 0 0 0 0 0 0 0 0 0
-
-Total # of neighbors = 2717141
-Ave neighs/atom = 113.21421
-Neighbor list builds = 0
-Dangerous builds = 0
+Total # of neighbors = 98245
+Ave neighs/atom = 76.753906
+Neighbor list builds = 250
+Dangerous builds not checked

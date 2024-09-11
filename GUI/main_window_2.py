@@ -118,6 +118,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.childwindow_2.Them_tim_lineEdit.setText('40')
 
     def start_main_1(self):
+        self.childwindow_1.close()
+        self.label.setText("材料热导率")
+        self.label_2.setText("W*K-1*m-1")
         # 清除结果文件内容
         with open('result_iterate.txt', 'w') as f:
             f.truncate(0)
@@ -152,6 +155,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.t.start()
     
     def start_main_2(self):
+        self.childwindow_2.close()
+        self.label.setText("界面热导")
+        self.label_2.setText("W*K-1*m-2")
         # 清除画布
         if self.verticalLayout_2.itemAt(0) != None:
             self.verticalLayout_2.itemAt(0).widget().deleteLater()
