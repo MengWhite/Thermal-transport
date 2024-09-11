@@ -24,6 +24,8 @@ class Render3D():
             pipeline.remove_from_scene()
         
         self.__new_pipeline(file_path)
+        self.time_slider.setMaximum(self.__maxminum_frame())
+
 
 
     def clear_modifiers(self):
@@ -110,6 +112,39 @@ class Render3D():
                 gradient = ColorCodingModifier.Gradient(color_list)
             )
         )
+
+
+    def insert_time_slider(self, layout: QLayout):
+        from PySide6.QtWidgets import QSlider
+        from PySide6.QtCore import Qt
+
+        self.time_slider = QSlider(Qt.Horizontal)
+        self.time_slider.setTickPosition(QSlider.TicksAbove)
+        self.time_slider.setTickInterval(int(self.__maxminum_frame()/20))
+        self.time_slider.setMaximum(self.__maxminum_frame())
+        def on_time_slider(frame: int):
+            self.__set_frame = frame
+        self.time_slider.valueChanged.connect(on_time_slider)
+        layout.addWidget(self.time_slider)
+
+    
+    def __set_frame(self, frame: int):
+        from ovito import scene
+        if frame <= self.__maxminum_frame():
+            scene.anim.current_frame = frame
+        else : 
+            scene.anim.current_frame = self.__maxminum_frame()
+
+
+    def __maxminum_frame(self):
+        if self.__current_pipeline() != None:
+            return self.__current_pipeline().source.num_frames()
+        return 1
+
+
+    def __current_pipeline(self):
+        from ovito import scene
+        return scene.selected_pipeline
 
 
     def insert_time_slider(self, layout: QLayout):
