@@ -249,7 +249,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         if len(self.iterate_x) != 0:
             cav = plot_2d(np.array(self.iterate_x) * 1e-2, np.array(self.iterate_y), 'Time/ps', 'Temperature/K')
             self.verticalLayout_2.addWidget(cav)
-        render_3d.set_file('data\lattice_final.lmp')
+        render_3d.set_file('data\lattice.dump')
 
         # 绘制体系区域温度
         self.heat_x_1 = []
@@ -321,7 +321,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         if len(self.iterate_x) != 0:
             cav = plot_2d(np.array(self.iterate_x) * 1e-2, np.array(self.iterate_y), 'Time/ps', 'Temperature/K')
             self.verticalLayout_2.addWidget(cav)
-        render_3d.set_file('data\lattice_final.lmp')
+        render_3d.set_file('data\lattice.dump')
 
         # 绘制体系区域温度
         self.heat_x_1 = []

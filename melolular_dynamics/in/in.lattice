@@ -118,6 +118,7 @@ thermo	        ${sim_steps_thermo}
 
 fix final all print ${sim_steps_thermo} '${tdiff}' file final_tdiff.txt screen no
 dump result_pdos all custom 100 result_pdos.txt id vx vy vz
+dump 1 all atom 10 data/lattice.dump
 
 run ${sim_steps_temp}
 run ${sim_steps_temp}

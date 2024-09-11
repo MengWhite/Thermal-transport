@@ -257,6 +257,9 @@ class Ui_Form(object):
         self.label_13.setText(QCoreApplication.translate("Form", u"\u5f17\u5170\u514b\u5c14\n"
 "\u7f3a\u9677\u5bf9\u6570\u91cf", None))
         self.finish.setText(QCoreApplication.translate("Form", u"\u5b8c\u6210", None))
+#if QT_CONFIG(shortcut)
+        self.finish.setShortcut(QCoreApplication.translate("Form", u"Return", None))
+#endif // QT_CONFIG(shortcut)
         self.label_14.setText(QCoreApplication.translate("Form", u"K", None))
         self.label_15.setText(QCoreApplication.translate("Form", u"K", None))
         self.label_16.setText(QCoreApplication.translate("Form", u"ps", None))

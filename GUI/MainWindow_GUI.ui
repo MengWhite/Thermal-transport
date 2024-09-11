@@ -142,6 +142,12 @@
       <height>31</height>
      </rect>
     </property>
+    <property name="font">
+     <font>
+      <family>宋体</family>
+      <pointsize>12</pointsize>
+     </font>
+    </property>
    </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">

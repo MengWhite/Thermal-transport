@@ -165,5 +165,6 @@ run ${sim_steps_thermo}
 run ${sim_steps_thermo}
 run ${final_steps}
 dump result_pdos all custom 10 result_pdos.txt id vx vy vz
+dump 1 all atom 10 data/lattice.dump
 run 100
 

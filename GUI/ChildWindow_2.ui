@@ -322,6 +322,9 @@ color: rgb(0, 0, 0);</string>
    <property name="text">
     <string>完成</string>
    </property>
+   <property name="shortcut">
+    <string>Return</string>
+   </property>
   </widget>
   <widget class="QLabel" name="label_12">
    <property name="geometry">
