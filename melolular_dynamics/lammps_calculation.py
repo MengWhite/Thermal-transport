@@ -8,7 +8,7 @@ class Work(QThread):
     signal = Signal(object)
     signal_2 = Signal(object)
     py_lammps: PyLammps
-    def __init__(self, element1, element2, element3, filepath, temperature0, temperature_set, iterate, ensemble_name, ensemble_name_1, heat, iterate_1, defect_num, x):
+    def __init__(self, filepath, temperature0, temperature_set, iterate, ensemble_name, ensemble_name_1, heat, iterate_1, defect_num, x, element1='', element2='', element3=''):
         print(filepath)
         super(Work, self).__init__()
         self.element1 = element1
@@ -118,10 +118,10 @@ class Work(QThread):
                 print(Temperture)
                 x_1 = self.x*9/10
                 x_2 = (self.lattice_x_max_1-self.x)/10+self.x
-                dT = abs(Temperture[9]-Temperture[8])
+                dT_dx = abs((Temperture[9]-Temperture[8])/((x_2-x_1)/2))
                 
 
-                self.T_conduct = self.heat*1.602e3/((self.z_max-self.z_min)*(self.y_max-self.y_min)*dT)
+                self.T_conduct = self.heat*1.602e3/((self.z_max-self.z_min)*(self.y_max-self.y_min)*dT_dx)
 
         self.signal.emit('计算完毕')
 
