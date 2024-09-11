@@ -118,8 +118,8 @@ class Render3D():
 
         time_slider = QSlider(Qt.Horizontal)
         time_slider.setTickPosition(QSlider.TicksAbove)
-        time_slider.setTickInterval(int(self.__maxminum_frame/20))
-        time_slider.setMaximum(self.__maxminum_frame)
+        time_slider.setTickInterval(int(self.__maxminum_frame()/20))
+        time_slider.setMaximum(self.__maxminum_frame())
         def on_time_slider(frame: int):
             self.__set_frame = frame
         time_slider.valueChanged.connect(on_time_slider)
@@ -134,8 +134,10 @@ class Render3D():
             scene.anim.current_frame = self.__maxminum_frame()
 
 
-    def __maxminum_frame(self):
-        return self.__current_pipeline().source.num_frames()
+    def __maxminum_frame(self) -> int:
+        if self.__current_pipeline() != None:
+            return self.__current_pipeline().source.num_frames()
+        return 1
 
 
     def __current_pipeline(self):

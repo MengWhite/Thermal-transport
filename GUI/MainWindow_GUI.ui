@@ -106,19 +106,6 @@
      <string>W*K-1*m-1</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="pushButton">
-    <property name="geometry">
-     <rect>
-      <x>240</x>
-      <y>880</y>
-      <width>561</width>
-      <height>41</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>进度条</string>
-    </property>
-   </widget>
    <widget class="QPushButton" name="pushButton_2">
     <property name="geometry">
      <rect>
@@ -144,6 +131,17 @@
     <property name="text">
      <string>切换</string>
     </property>
+   </widget>
+   <widget class="QWidget" name="verticalLayoutWidget_5">
+    <property name="geometry">
+     <rect>
+      <x>240</x>
+      <y>880</y>
+      <width>561</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <layout class="QVBoxLayout" name="verticalLayout_5"/>
    </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
