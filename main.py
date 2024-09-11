@@ -11,6 +11,7 @@ app = QApplication(sys.argv)
 window = MainWindow()
 window.show()
 
-render_3d.insert_widget(window.painting_zoom)
+render_3d.insert_widget(window.verticalLayout)
+render_3d.insert_time_slider(window.verticalLayout_5)
 
 sys.exit(app.exec())
