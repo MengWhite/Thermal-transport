@@ -1,10 +1,12 @@
 import sys
 import os
+from PySide6.QtGui import QCloseEvent
 import numpy as np
 import ovito
 sys.path.append("../..")
 os.environ['OVITO_GUI_MODE'] = '1'
-from PySide6.QtWidgets import QMainWindow
+from PySide6.QtWidgets import QMainWindow, QLabel
+from PySide6.QtGui import QPixmap
 from GUI.MainWindow_GUI import Ui_MainWindow
 from GUI.ChildWindow_1 import Ui_Form as Ui_Form_1
 from GUI.ChildWindow_2 import Ui_Form as Ui_Form_2
@@ -25,17 +27,20 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.childwindow_2 = ChildMaindow_2()
         self.action_set_1.triggered.connect(self.childwindow_1.show)
         self.action_set_2.triggered.connect(self.childwindow_2.show)
-        self.action_save.triggered.connect(self.save_file)
+        self.menu_4.triggered.connect(self.help_doc)
         self.setting()
         self.childwindow_1.exp1_arg_pushButton.clicked.connect(self.recommend_experiment_1)
         self.childwindow_2.exp2_arg_pushButton.clicked.connect(self.recommend_experiment_2)
         self.childwindow_1.finish.clicked.connect(self.start_main_1)
         self.childwindow_2.finish.clicked.connect(self.start_main_2)
-        # self.gap_checkBox_2.clicked.connect(self.set_occupancy)
-        # self.zon_tem_checkBox_2.clicked.connect(self.set_tempareture_display)
-        # self.vacant_checkBox.clicked.connect(self.set_vacancy)
-        # self.exp2_arg_pushButton_2.clicked.connect(self.save_file)
-        # self.exp2_arg_pushButton_3.clicked.connect(self.help_doc)     
+        self.comboBox.currentIndexChanged.connect(self.show_experiment)
+        self.num_temp = 0
+
+    def clearLayout(self, layout):
+        while layout.count():
+            child = layout.takeAt(0)
+            if child.widget():
+                child.widget().deleteLater()
 
     def setting(self):
         self.atom_all = ["Cu", "Ag", "Au", "Ni", "Pd", "Pt", "Al", "Pb", "Fe", "Mo", "Ta", "W"]
@@ -118,6 +123,10 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.childwindow_2.Them_tim_lineEdit.setText('40')
 
     def start_main_1(self):
+        text = self.save_experimental(1)
+        self.comboBox.addItem(text)
+        self.comboBox.setCurrentIndex(self.num_temp)
+        self.num_temp = self.num_temp + 1
         self.childwindow_1.close()
         self.label.setText("材料热导率")
         self.label_2.setText("W*K-1*m-1")
@@ -155,16 +164,13 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.t.start()
     
     def start_main_2(self):
+        text = self.save_experimental(2)
+        self.comboBox.addItem(text)
+        self.comboBox.setCurrentIndex(self.num_temp)
+        self.num_temp = self.num_temp + 1
         self.childwindow_2.close()
         self.label.setText("界面热导")
         self.label_2.setText("W*K-1*m-2")
-        # 清除画布
-        if self.verticalLayout_2.itemAt(0) != None:
-            self.verticalLayout_2.itemAt(0).widget().deleteLater()
-        if self.verticalLayout_3.itemAt(0) != None:
-            self.verticalLayout_3.itemAt(0).widget().deleteLater()
-        if self.verticalLayout_4.itemAt(0) != None:
-            self.verticalLayout_4.itemAt(0).widget().deleteLater()
         # 清除结果文件内容
         with open('result_iterate.txt', 'w') as f:
             f.truncate(0)
@@ -211,12 +217,11 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         webbrowser.open('data\软件帮助手册.pdf', new=2)
     
     def plot_1(self):
-        if self.verticalLayout_2.itemAt(0) != None: # 清空T-Time图像，防止暂停时重复绘图
-            self.verticalLayout_2.itemAt(0).widget().deleteLater()
-        if self.verticalLayout_3.itemAt(0) != None:
-            self.verticalLayout_3.itemAt(0).widget().deleteLater()
-        if self.verticalLayout_4.itemAt(0) != None:
-            self.verticalLayout_4.itemAt(0).widget().deleteLater()
+        import shutil
+        shutil.copyfile('data/lattice.dump', 'data/data_save/第' + str(self.num_temp) + '次实验/lattice.dump')
+        self.clearLayout(self.verticalLayout_2)
+        self.clearLayout(self.verticalLayout_3)
+        self.clearLayout(self.verticalLayout_4)
         self.clear_GUI()
         self.exp_res_lineEdit_2.setText(str(round(float(self.t.T_conduct), 1)))
         # 数据文件x轴最大值
@@ -247,7 +252,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                 if f.tell() >= eof:  #将当前位置与文件尾(eof)比较
                     break
         if len(self.iterate_x) != 0:
-            cav = plot_2d(np.array(self.iterate_x) * 1e-2, np.array(self.iterate_y), 'Time/ps', 'Temperature/K')
+            cav = plot_2d(np.array(self.iterate_x) * 1e-2, np.array(self.iterate_y), 'Time/ps', 'Temperature/K', savename="弛豫过程温度", save_path=self.savepath)
             self.verticalLayout_2.addWidget(cav)
         render_3d.set_file('data\lattice.dump')
 
@@ -264,7 +269,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                 self.heat_x_1.append(float(data[0]) * float(lattice_x_max_1)/20)
                 self.heat_y_1.append(float(data[3]))
         if len(self.heat_x_1) != 0:
-            cav = fit_plot(np.array(self.heat_x_1), np.array(self.heat_y_1),  'X/Å', 'Temperature/K', bar='yes', ymin=min(self.heat_y_1), ymax=max(self.heat_y_1))
+            cav = fit_plot(np.array(self.heat_x_1), np.array(self.heat_y_1),  'X/Å', 'Temperature/K', bar='yes', ymin=min(self.heat_y_1), ymax=max(self.heat_y_1), savename="体系区域温度", save_path=self.savepath)
             self.verticalLayout_3.addWidget(cav)
 
         #绘制声子态密度曲线
@@ -281,16 +286,17 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         vacf_output, pdos = find_pdos(veclocity, 100, dt = 0.001, omega = omega)
         self.pdos_x = omega
         self.pdos_y = pdos
-        cav = plot_2d(self.pdos_x, self.pdos_y, 'Omega/THZ', 'PDOS')
+        cav = plot_2d(self.pdos_x, self.pdos_y, 'Omega/THZ', 'PDOS', savename="声子态密度", save_path=self.savepath)
         self.verticalLayout_4.addWidget(cav)
 
     def plot_2(self):
-        if self.verticalLayout_2.itemAt(0) != None: # 清空T-Time图像，防止暂停时重复绘图
-            self.verticalLayout_2.itemAt(0).widget().deleteLater()
-        if self.verticalLayout_3.itemAt(0) != None:
-            self.verticalLayout_3.itemAt(0).widget().deleteLater()
-        if self.verticalLayout_4.itemAt(0) != None:
-            self.verticalLayout_4.itemAt(0).widget().deleteLater()
+        import shutil
+        shutil.copyfile('data/lattice.dump', 'data/data_save/第' + str(self.num_temp) + '次实验/lattice.dump')
+        text = self.save_experimental(2)
+        self.comboBox.addItem(text)
+        self.clearLayout(self.verticalLayout_2)
+        self.clearLayout(self.verticalLayout_3)
+        self.clearLayout(self.verticalLayout_4)
         self.clear_GUI()
         self.exp_res_lineEdit_2.setText(str(round(float(self.t.T_conduct), 1)))
         # 数据文件x轴最大值
@@ -319,7 +325,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                 if f.tell() >= eof:  #将当前位置与文件尾(eof)比较
                     break
         if len(self.iterate_x) != 0:
-            cav = plot_2d(np.array(self.iterate_x) * 1e-2, np.array(self.iterate_y), 'Time/ps', 'Temperature/K')
+            cav = plot_2d(np.array(self.iterate_x) * 1e-2, np.array(self.iterate_y), 'Time/ps', 'Temperature/K', savename="弛豫过程温度", save_path=self.savepath)
             self.verticalLayout_2.addWidget(cav)
         render_3d.set_file('data\lattice.dump')
 
@@ -341,7 +347,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                     self.heat_x_2.append(((float(lattice_x_max_1) - float(self.x))/10) * (i - 9) + self.x)
                     self.heat_y_2.append(float(data[i]))
         if len(self.heat_x_2) != 0:
-            cav = plot_scatter(np.array(self.heat_x_2[9:11]), np.array(self.heat_y_2[9:11]),np.array(self.heat_x_2), np.array(self.heat_y_2),  'X/Å', 'Temperature/K', bar='yes', ymin=min(self.heat_y_2), ymax=max(self.heat_y_2))
+            cav = plot_scatter(np.array(self.heat_x_2[9:11]), np.array(self.heat_y_2[9:11]),np.array(self.heat_x_2), np.array(self.heat_y_2),  'X/Å', 'Temperature/K', bar='yes', ymin=min(self.heat_y_2), ymax=max(self.heat_y_2), savename="体系区域温度", save_path=self.savepath)
             self.verticalLayout_3.addWidget(cav)
 
         #绘制声子态密度曲线
@@ -358,7 +364,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         vacf_output, pdos = find_pdos(veclocity, 100, dt = 0.001, omega = omega)
         self.pdos_x = omega
         self.pdos_y = pdos
-        cav = plot_2d(self.pdos_x, self.pdos_y, 'Omega/THZ', 'PDOS')
+        cav = plot_2d(self.pdos_x, self.pdos_y, 'Omega/THZ', 'PDOS', savename="声子态密度", save_path=self.savepath)
         self.verticalLayout_4.addWidget(cav)
 
     def set_occupancy(self):
@@ -400,44 +406,13 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             render_3d.set_occupancy('data/lattice.lmp',True)
             
     def save_file(self):
+        import shutil
         import tkinter as tk
         from tkinter import filedialog
         root = tk.Tk()
         root.withdraw()
         Folderpath = filedialog.askdirectory()
-        self.element1 = self.childwindow_2.exp2_ele1_comboBox.currentText()
-        self.element2 = self.childwindow_2.exp2_ele1_comboBox.currentText()
-        self.element3 = self.childwindow_2.exp2_ele2_comboBox.currentText()
-        if len(self.iterate_x) != 1 and self.element2 == '':
-            cav = plot_2d(np.array(self.iterate_x) * 1e-3, np.array(self.iterate_y), 'Time/ps', 'Temperature/K', savename='体系温度曲线_单元素', save_path=Folderpath)
-        else:
-            if os.path.isfile(Folderpath + '/体系温度曲线_单元素.png'):
-                os.remove(Folderpath + '/体系温度曲线_单元素.png')
-                os.remove(Folderpath + '/体系温度曲线_单元素.txt')
-        if len(self.iterate_x) != 1 and self.element1 == '':
-            cav = plot_2d(np.array(self.iterate_x) * 1e-3, np.array(self.iterate_y), 'Time/ps', 'Temperature/K', savename='体系温度曲线_多元素', save_path=Folderpath)
-        else:
-            if os.path.isfile(Folderpath + '/体系温度曲线_多元素.png'):
-                os.remove(Folderpath + '/体系温度曲线_多元素.png')
-                os.remove(Folderpath + '/体系温度曲线_多元素.txt')
-        if len(self.heat_x_1) != 0 and self.element2 == '':
-            cav = fit_plot(np.array(self.heat_x_1), np.array(self.heat_y_1), 'X/Å', 'Temperature/K', bar='yes', ymin=min(self.heat_y_1), ymax=max(self.heat_y_1), savename='体系区域温度_单元素', save_path=Folderpath)
-        else:
-            if os.path.isfile(Folderpath + '/体系区域温度_单元素.png'):
-                os.remove(Folderpath + '/体系区域温度_单元素.png')
-                os.remove(Folderpath + '/体系区域温度_单元素.txt')
-        if len(self.heat_x_2) != 0 and self.element1 == '':
-            cav = plot_scatter(np.array(self.heat_x_2[9:11]), np.array(self.heat_y_2[9:11]),np.array(self.heat_x_2), np.array(self.heat_y_2), 'X/Å', 'Temperature/K', savename='体系区域温度_多元素', save_path=Folderpath, bar='yes')
-        else:
-            if os.path.isfile(Folderpath + '/体系区域温度_多元素.png'):
-                os.remove(Folderpath + '/体系区域温度_多元素.png')
-                os.remove(Folderpath + '/体系区域温度_多元素.txt')
-        # if len(self.t.omega) != 0 and self.exp2_radioButton.isChecked():    # 保证暂停时不绘图
-        #     cav = plot_2d(self.t.omega, self.t.pdos, 'Omega', 'Pdos', 'Pdos', '声子态密度曲线_多元素', Folderpath)
-        # else:
-        #     if os.path.isfile(Folderpath + '/声子态密度曲线_多元素.png'):
-        #         os.remove(Folderpath + '/声子态密度曲线_多元素.png')
-        #         os.remove(Folderpath + '/声子态密度曲线_多元素.txt')
+        shutil.copytree('data\data_save' + "\第" + str(self.num_temp) + "次实验", Folderpath + '/save_data')
         if self.heat_y_1 != []:
             render_3d.render_png(
                 filename=Folderpath + '/晶体原子3D渲染图.png', 
@@ -486,6 +461,45 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.childwindow_2.defect_lineEdit.setText('0')
         self.childwindow_2.Them_tim_lineEdit.setText('0')
         self.childwindow_2.Them_sys_lineEdit.setText('nve')
+
+    def save_experimental(self, type):
+        import time
+        formatted_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
+        path = "data\data_save"            # 输入一级文件夹地址
+        files = os.listdir(path)           # 读入一级文件夹
+        num = len(files)                   # 统计一级文件夹中的二级文件夹个数
+        self.savepath = path + "\第" + str(num + 1) + "次实验"
+        os.makedirs(self.savepath)
+        text = "第" + str(num + 1) + "次实验" + "  实验时间" + str(formatted_time) + "  实验" + str(type)
+        return text
+
+    def show_experiment(self):
+        if self.num_temp > 1:
+            self.clearLayout(self.verticalLayout_2)
+            self.clearLayout(self.verticalLayout_3)
+            self.clearLayout(self.verticalLayout_4)
+            index = self.comboBox.currentIndex()
+            savepath = "data\data_save" + "\第" + str(index + 1) + "次实验"
+            label = QLabel()
+            pixmap = QPixmap(savepath + "\弛豫过程温度.png")
+            label.setPixmap(pixmap)
+            self.verticalLayout_2.addWidget(label)
+            label = QLabel()
+            pixmap = QPixmap(savepath + "\体系区域温度.png")
+            label.setPixmap(pixmap)
+            self.verticalLayout_3.addWidget(label)
+            label = QLabel()
+            pixmap = QPixmap(savepath + "\声子态密度.png")
+            label.setPixmap(pixmap)
+            self.verticalLayout_4.addWidget(label)
+            render_3d.set_file(savepath + "\lattice.dump")
+
+    def closeEvent(self, event):
+        import shutil
+        dirpath = "data\data_save"
+        if os.path.exists(dirpath):
+            shutil.rmtree(dirpath)
+        os.makedirs(dirpath)
 
 class ChildMaindow_1(QMainWindow, Ui_Form_1):
     def __init__(self):

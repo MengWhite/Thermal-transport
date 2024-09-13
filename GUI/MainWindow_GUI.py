@@ -16,10 +16,9 @@ from PySide6.QtGui import (QAction, QBrush, QColor, QConicalGradient,
     QIcon, QImage, QKeySequence, QLinearGradient,
     QPainter, QPalette, QPixmap, QRadialGradient,
     QTransform)
-
-from PySide6.QtWidgets import (QApplication, QLabel, QLineEdit, QMainWindow,
-    QMenu, QMenuBar, QPushButton, QSizePolicy,
-    QStatusBar, QVBoxLayout, QWidget)
+from PySide6.QtWidgets import (QApplication, QComboBox, QLabel, QLineEdit,
+    QMainWindow, QMenu, QMenuBar, QPushButton,
+    QSizePolicy, QStatusBar, QVBoxLayout, QWidget)
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -76,9 +75,6 @@ class Ui_MainWindow(object):
         self.label_2.setObjectName(u"label_2")
         self.label_2.setGeometry(QRect(1240, 830, 111, 31))
         self.label_2.setFont(font1)
-        self.pushButton_2 = QPushButton(self.centralwidget)
-        self.pushButton_2.setObjectName(u"pushButton_2")
-        self.pushButton_2.setGeometry(QRect(810, 877, 681, 41))
         self.pushButton_3 = QPushButton(self.centralwidget)
         self.pushButton_3.setObjectName(u"pushButton_3")
         self.pushButton_3.setGeometry(QRect(10, 880, 221, 41))
@@ -91,6 +87,10 @@ class Ui_MainWindow(object):
         self.exp_res_lineEdit_2 = QLineEdit(self.centralwidget)
         self.exp_res_lineEdit_2.setObjectName(u"exp_res_lineEdit_2")
         self.exp_res_lineEdit_2.setGeometry(QRect(1160, 830, 71, 31))
+        self.exp_res_lineEdit_2.setFont(font1)
+        self.comboBox = QComboBox(self.centralwidget)
+        self.comboBox.setObjectName(u"comboBox")
+        self.comboBox.setGeometry(QRect(810, 877, 681, 41))
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QMenuBar(MainWindow)
         self.menubar.setObjectName(u"menubar")
@@ -133,8 +133,7 @@ class Ui_MainWindow(object):
         self.action_save.setText(QCoreApplication.translate("MainWindow", u"\u53e6\u5b58\u4e3a", None))
         self.label.setText(QCoreApplication.translate("MainWindow", u"\u754c\u9762\u70ed\u5bfc\u7387\uff1a", None))
         self.label_2.setText(QCoreApplication.translate("MainWindow", u"W*K-1*m-1", None))
-        self.pushButton_2.setText(QCoreApplication.translate("MainWindow", u"PushButton", None))
-        self.pushButton_3.setText(QCoreApplication.translate("MainWindow", u"\u5207\u6362", None))
+        self.pushButton_3.setText(QCoreApplication.translate("MainWindow", u"\u65e0\u9ad8\u4eae\u663e\u793a", None))
         self.menu.setTitle(QCoreApplication.translate("MainWindow", u"\u6587\u4ef6", None))
         self.menu_2.setTitle(QCoreApplication.translate("MainWindow", u"\u65b0\u5efa", None))
         self.menu_3.setTitle(QCoreApplication.translate("MainWindow", u"\u7f16\u8f91", None))

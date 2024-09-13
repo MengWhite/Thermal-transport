@@ -52,7 +52,7 @@
      <rect>
       <x>1030</x>
       <y>540</y>
-      <width>521</width>
+      <width>471</width>
       <height>271</height>
      </rect>
     </property>
@@ -96,19 +96,6 @@
      <string>W*K-1*m-1</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="pushButton_2">
-    <property name="geometry">
-     <rect>
-      <x>810</x>
-      <y>877</y>
-      <width>681</width>
-      <height>41</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>PushButton</string>
-    </property>
-   </widget>
    <widget class="QPushButton" name="pushButton_3">
     <property name="geometry">
      <rect>
@@ -119,7 +106,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>切换</string>
+     <string>无高亮显示</string>
     </property>
    </widget>
    <widget class="QWidget" name="verticalLayoutWidget_5">
@@ -147,6 +134,16 @@
       <family>宋体</family>
       <pointsize>12</pointsize>
      </font>
+    </property>
+   </widget>
+   <widget class="QComboBox" name="comboBox">
+    <property name="geometry">
+     <rect>
+      <x>810</x>
+      <y>877</y>
+      <width>681</width>
+      <height>41</height>
+     </rect>
     </property>
    </widget>
   </widget>

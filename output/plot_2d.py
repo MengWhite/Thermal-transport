@@ -2,7 +2,7 @@ def plot_2d(x, y, xlabel, ylabel, ymin=None, ymax=None, savename=None, save_path
     import numpy as np
     from matplotlib import pyplot as plt
     from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
-    fig = plt.figure()
+    fig = plt.figure(figsize=(4.71, 2.71))
     fig.patch.set_facecolor('w')
     cav = FigureCanvas(fig)
     ax = fig.subplots()
@@ -50,7 +50,7 @@ def fit_plot(x, y, xlabel, ylabel, ymin=None, ymax=None, savename=None, save_pat
     import numpy as np
     import matplotlib.pyplot as plt
     from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
-    fig = plt.figure()
+    fig = plt.figure(figsize=(4.71, 2.71))
     fig.patch.set_facecolor('w')
     cav = FigureCanvas(fig)
     ax = fig.subplots()
